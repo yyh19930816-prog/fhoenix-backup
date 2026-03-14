@@ -1,0 +1,44 @@
+{
+  "description": "OpenClaw Control UI 构建与运行参数摘要",
+  "source": "D:\\OpenClaw\\app\\ui",
+  "package": {
+    "name": "openclaw-control-ui",
+    "private": true,
+    "type": "module",
+    "scripts": {
+      "build": "vite build",
+      "dev": "vite",
+      "preview": "vite preview",
+      "test": "vitest run --config vitest.config.ts"
+    }
+  },
+  "vite": {
+    "base": "./",
+    "base_env": "OPENCLAW_CONTROL_UI_BASE_PATH",
+    "publicDir": "public",
+    "build": {
+      "outDir": "../dist/control-ui",
+      "emptyOutDir": true,
+      "sourcemap": true,
+      "chunkSizeWarningLimit": 1024
+    },
+    "server": {
+      "host": true,
+      "port": 5173,
+      "strictPort": true
+    }
+  },
+  "index_html": {
+    "title": "OpenClaw Control",
+    "lang": "en",
+    "viewport": "width=device-width, initial-scale=1.0",
+    "color_scheme": "dark light",
+    "entry": "/src/main.ts",
+    "root_element": "openclaw-app"
+  },
+  "theme_logic": {
+    "modes": ["dark", "light"],
+    "selector_light": ":root[data-theme=\"light\"]",
+    "default": "dark"
+  }
+}
