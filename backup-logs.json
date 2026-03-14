@@ -1,0 +1,19 @@
+{
+  "backups": [
+    {
+      "id": 1773479539110,
+      "startTime": "2026-03-14T09:12:19.110Z",
+      "endTime": "2026-03-14T09:12:21.038Z",
+      "duration": 1928,
+      "filesChanged": 0,
+      "success": false,
+      "error": "推送到远程仓库失败: Command failed: git push origin main\nfatal: could not read Username for 'https://github.com': Device not configured\n"
+    }
+  ],
+  "stats": {
+    "totalBackups": 1,
+    "successful": 0,
+    "failed": 1,
+    "lastBackup": "2026-03-14T09:12:19.110Z"
+  }
+}

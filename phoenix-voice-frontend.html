@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰语音交互 - 前端界面</title>
+    <style>
+        :root {
+            --phoenix-red: #f43f5e;
+            --phoenix-orange: #fb923c;
+            --phoenix-gold: #fbbf24;
+            --phoenix-bg-dark: #0f1419;
+            --phoenix-bg-light: #1e293b;
+            --phoenix-text: #e2e8f0;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+            color: var(--phoenix-text);
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--phoenix-red);
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .voice-controls {
+            text-align: center;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid rgba(244, 63, 94, 0.3);
+            width: 100%;
+        }
+        
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border: none;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mic-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.4);
+        }
+        
+        .mic-button.listening {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+            }
+        }
+        
+        .mic-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: wave 2s infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .status-online {
+            background: rgba(16,185,129,0ifteen);
+            color: #86efac;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        
+        .status-recording {
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+        
+        .conversation-log {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            background: rgba(59,130,246,0.2);
+            margin-left: auto;
+            border: 1px solid rgba(59,130,246,0.3);
+            max-width: 80%;
+        }
+        
+        .message.bot {
+            background: rgba(16,185,129,0.2);
+            margin-right: auto;
+            border: 1px solid rgba(16,185,129,0.3);
+            max-width: 80%;
+        }
+        
+        .audio-waveform {
+            height: 60px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave-bar {
+            width: 3px;
+            background: var(--phoenix-orange);
+            position: absolute;
+            bottom: 0;
+            animation: waveBar 0.5s infinite alternate;
+        }
+        
+        @keyframes waveBar {
+            0% { height: 10%; }
+            100% { height: 90%; }
+        }
+        
+        .file-input-container {
+            margin: 1rem 0;
+        }
+        
+        .file-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--phoenix-text);
+            padding: 0.5rem;
+            border-radius: 6px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="title">凤凰语音交互系统</h1>
+        <p>服务端语音处理 - 避开浏览器麦克风限制</p>
+    </header>
+    
+    <div class="container">
+        <div class="voice-controls">
+            <h2>语音输入控制</h2>
+            
+            <div class="status-indicator status-online" id="server-status">
+                ● 语音服务在线
+            </div>
+            
+            <!-- 手动上传音频文件 -->
+            <div class="file-input-container">
+                <label>上传音频文件进行识别:</label>
+                <input type="file" class="file-input" id="audio-file" accept="audio/*">
+                <button onclick="uploadAudioFile()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--phoenix-orange); border: none; border-radius: 6px; color: white; cursor: pointer;">上传识别</button>
+            </div>
+            
+            <!-- 手动录音说明 -->
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                <h3>使用说明:</h3>
+                <p>1. 使用手机或其他设备录音</p>
+                <p>2. 将录音文件上传到这里</p>
+                <p>3. 系统会自动识别并回复</p>
+                <p>4. 回避了浏览器麦克风权限限制</p>
+            </div>
+        </div>
+        
+        <div class="conversation-log" id="conversation-log">
+            <div class="message bot">
+                <strong>凤凰AI:</strong> 语音系统准备就绪。请上传音频文件开始对话。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const VOICE_API = 'http://localhost:3001';
+        
+        // 检查语音服务状态
+        async function checkVoiceService() {
+            try {
+                const response = await fetch(VOICE_API + '/voice/status');
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('server-status');
+                statusEl.className = 'status-indicator status-online';
+                statusEl.innerHTML = `● 语音服务在线 (端口${data.port})`;
+                
+                return true;
+            } catch (error) {
+                const statusEl = document.getElementById('server-status');
+                statusEl.className = 'status-indicator status-offline';
+                statusEl.innerHTML = '● 语音服务离线';
+                
+                addMessage('bot', '❌ 无法连接到语音服务');
+                return false;
+            }
+        }
+        
+        // 上传音频文件
+        async function uploadAudioFile() {
+            const fileInput = document.getElementById('audio-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('请选择音频文件');
+                return;
+            }
+            
+            if (!file.type.startsWith('audio/')) {
+                alert('请选择音频文件格式');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('audio', file);
+            formData.append('sessionId', 'voice_session_' + Date.now());
+            
+            // 显示上传状态
+            addMessage('user', `📤 上传音频文件: ${file.name}`);
+            
+            try {
+                const response = await fetch(VOICE_API + '/voice/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage('bot', `🎯 识别结果: "${data.recognizedText}"`);
+                    addMessage('bot', `🤖 AI回复: ${data.aiResponse}`);
+                } else {
+                    addMessage('bot', `❌ 识别失败: ${data.error}`);
+                }
+                
+            } catch (error) {
+                addMessage('bot', '❌ 上传失败，请检查网络连接');
+                console.error('上传错误:', error);
+            }
+        }
+        
+        // 添加消息到对话记录
+        function addMessage(sender, content) {
+            const logDiv = document.getElementById('conversation-log');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            let prefix = '';
+            if (sender === 'user') prefix = '你';
+            else if (sender === 'bot') prefix = '凤凰AI';
+            
+            messageDiv.innerHTML = `<strong>${prefix}:</strong> ${content}`;
+            
+            logDiv.appendChild(messageDiv);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // 页面加载初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            checkVoiceService();
+            
+            // 测试文本转语音
+            setTimeout(() => {
+                testTextToSpeech();
+            }, 2000);
+        });
+        
+        // 测试文本转语音功能
+        async function testTextToSpeech() {
+            try {
+                const response = await fetch(VOICE_API + '/voice/text-to-speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: '语音系统测试成功',
+                        sessionId: 'test_session'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    console.log('文本转语音测试成功:', data);
+                }
+            } catch (error) {
+                console.error('文本转语音测试失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>

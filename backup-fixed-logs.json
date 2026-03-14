@@ -1,0 +1,19 @@
+{
+  "backups": [
+    {
+      "id": 1773479999092,
+      "startTime": "2026-03-14T09:19:59.092Z",
+      "endTime": "2026-03-14T09:19:59.209Z",
+      "duration": 117,
+      "method": "local",
+      "fileSize": 67801,
+      "success": true,
+      "filePath": "/Users/guohao/.openclaw/workspace/local-backups/backup-1773479999092.tar.gz"
+    }
+  ],
+  "stats": {
+    "total": 1,
+    "success": 1,
+    "failed": 0
+  }
+}

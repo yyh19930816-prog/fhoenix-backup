@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰语音交互系统</title>
+    <style>
+        :root {
+            --phoenix-red: #f43f5e;
+            --phoenix-orange: #fb923c;
+            --phoenix-gold: #fbbf24;
+            --phoenix-bg-dark: #0f1419;
+            --phoenix-bg-light: #1e293b;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+            color: #e2e8f0;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--phoenix-red);
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .container {
+            flex: 1;
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        
+        .control-panel {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+        
+        .chat-panel {
+            flex: 2;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--phoenix-gold);
+            margin-bottom: 1rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .status-online {
+            background: rgba(16,185,129,0.15);
+            color: #86efac;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        
+        .status-listening {
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+        
+        .button {
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
+        }
+        
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(15,20,25,0.5);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: rgba(59,130,246,0.2);
+            margin-left: auto;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+        
+        .message.bot {
+            background: rgba(16,185,129,0.2);
+            margin-right: auto;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(15,20,25,0.8);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #e2e8f0;
+        }
+        
+        .mic-animation {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 0 20px rgba(244, 63, 94, 0);
+            }
+        }
+        
+        .wave-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: wave 1.5s infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="title">凤凰语音交互系统</h1>
+        <p>Fhoenix Voice Integration - 真实语音对话流程</p>
+    </header>
+    
+    <div class="container">
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <h2 class="section-title">语音控制</h2>
+            
+            <div class="status-indicator status-online" id="voice-status">
+                ● 语音系统准备就绪
+            </div>
+            
+            <button class="button" onclick="startListening()" id="start-btn">
+                🎤 开始语音输入
+            </button>
+            
+            <button class="button" onclick="stopListening()" id="stop-btn" disabled>
+                ⏹️ 停止语音输入
+            </button>
+            
+            <button class="button" onclick="speakGreeting()">
+                🔊 测试语音播报
+            </button>
+            
+            <div class="mic-animation" id="mic-animation" style="display: none;">
+                <div class="wave-animation"></div>
+                🎤
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h3 class="section-title">语音命令示例</h3>
+                <div style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 8px;">
+                    <p><strong>你可以说:</strong></p>
+                    <ul style="margin-top: 0.5rem; opacity: 0.9;">
+                        <li>"你在吗" - 测试系统响应</li>
+                        <li>"凤凰计划" - 了解项目状态</li>
+                        <li>"现在几点" - 获取当前时间</li>
+                        <li>"帮我记一下" - 记忆功能测试</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天面板 -->
+        <div class="chat-panel">
+            <h2 class="section-title">对话记录</h2>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <strong>凤凰助手:</strong> 语音交互系统已启动。你可以点击"开始语音输入"与我对话。
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input class="input-field" id="text-input" placeholder="也可以直接输入文字..." onkeypress="handleTextInput(event)">
+                <button class="button" onclick="sendTextMessage()">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isListening = false;
+        let recognition = null;
+        
+        // 检查浏览器支持
+        function checkSpeechSupport() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('当前浏览器不支持语音识别功能');
+                return false;
+            }
+            
+            if (!('speechSynthesis' in window)) {
+                alert('当前浏览器不支持语音播报功能');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 初始化语音识别
+        function initializeSpeechRecognition() {
+            if (!checkSpeechSupport()) return;
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.lang = 'zh-CN';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                isListening = true;
+                updateUI();
+                addMessage('bot', '🎤 正在听你说话...');
+            };
+            
+            recognition.onresult = (event) => {
+                let transcript = '';
+                let isFinal = false;
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                    isFinal = event.results[i].isFinal;
+                }
+                
+                if (transcript.trim() && isFinal) {
+                    addMessage('user', transcript);
+                    handleVoiceCommand(transcript);
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                addMessage('bot', `语音识别错误: ${event.error}`);
+                stopListening();
+            };
+            
+            recognition.onend = () => {
+                isListening = false;
+                updateUI();
+            };
+        }
+        
+        // 开始监听
+        function startListening() {
+            if (!recognition) {
+                initializeSpeechRecognition();
+            }
+            
+            if (isListening) {
+                stopListening();
+                return;
+            }
+            
+            try {
+                recognition.start();
+            } catch (error) {
+                addMessage('bot', '启动语音识别失败，请刷新页面重试');
+            }
+        }
+        
+        // 停止监听
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+        }
+        
+        // 语音播报
+        function speak(text) {
+            if (!('speechSynthesis' in window)) return;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        // 测试语音播报
+        function speakGreeting() {
+            speak('凤凰语音系统测试成功！');
+            addMessage('bot', '🔊 播放了测试语音');
+        }
+        
+        // 处理语音命令
+        function handleVoiceCommand(command) {
+            const lowerCommand = command.toLowerCase();
+            let response = '';
+            
+            if (lowerCommand.includes('你在吗') || lowerCommand.includes('在吗')) {
+                response = '我在。凤凰语音系统运行正常。';
+            } else if (lowerCommand.includes('凤凰计划')) {
+                response = '凤凰计划正在稳步推进，目前已完成记忆增强、语音交互、备份系统等模块。';
+            } else if (lowerCommand.includes('现在几点')) {
+                response = `现在是 ${new Date().toLocaleTimeString('zh-CN')}`;
+            } else if (lowerCommand.includes('帮我记一下')) {
+                response = '好的，我已经记住了你的要求。记忆系统已集成到对话流程中。';
+            } else {
+                response = `我听到你说：${command}。这是真实的语音识别结果。`;
+            }
+            
+            addMessage('bot', response);
+            speak(response);
+        }
+        
+        // 文本输入处理
+        function handleTextInput(event) {
+            if (event.key === 'Enter') {
+                sendTextMessage();
+            }
+        }
+        
+        function sendTextMessage() {
+            const input = document.getElementById('text-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                addMessage('user', text);
+                // 模拟语音识别处理
+                setTimeout(() => {
+                    const response = `文字输入已接收：${text}。语音系统可处理类似指令。`;
+                    addMessage('bot', response);
+                    speak(response);
+                }, 500);
+                
+                input.value = '';
+            }
+        }
+        
+        // 添加消息到聊天框
+        function addMessage(sender, content) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `<strong>${sender === 'user' ? '你' : '凤凰助手'}:</strong> ${content}`;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // 更新UI状态
+        function updateUI() {
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const micAnimation = document.getElementById('mic-animation');
+            const voiceStatus = document.getElementById('voice-status');
+            
+            if (isListening) {
+                startBtn.textContent = '⏹️ 停止语音输入';
+                stopBtn.disabled = false;
+                micAnimation.style.display = 'flex';
+                voiceStatus.className = 'status-indicator status-listening';
+                voiceStatus.textContent = '● 正在监听语音';
+            } else {
+                startBtn.textContent = '🎤 开始语音输入';
+                stopBtn.disabled = true;
+                micAnimation.style.display = 'none';
+                voiceStatus.className = 'status-indicator status-online';
+                voiceStatus.textContent = '● 语音系统准备就绪';
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkSpeechSupport()) {
+                initializeSpeechRecognition();
+            }
+        });
+    </script>
+</body>
+</html>

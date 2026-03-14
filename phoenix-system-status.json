@@ -1,0 +1,26 @@
+{
+  "modules": {
+    "memory": {
+      "status": "online",
+      "lastUpdate": "2026-03-14T09:39:16.518Z",
+      "message": "记忆索引构建完成"
+    },
+    "voice": {
+      "status": "processing",
+      "lastUpdate": "2026-03-14T09:39:30.520Z",
+      "message": "处理语音输入"
+    },
+    "backup": {
+      "status": "scanning",
+      "lastUpdate": "2026-03-14T09:39:25.518Z",
+      "message": "检查文件变更"
+    },
+    "ui": {
+      "status": "rendering",
+      "lastUpdate": "2026-03-14T09:39:35.522Z",
+      "message": "渲染界面"
+    }
+  },
+  "lastUpdate": "2026-03-14T09:39:35.522Z",
+  "health": "starting"
+}

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰语音 - 权限修复版</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f1419, #1e293b);
+            color: #e2e8f0;
+            border-radius: 20px;
+            min-height: 90vh;
+        }
+        .container {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid rgba(244, 63, 94, 0.3);
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #f43f5e, #fb923c, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .status-item.ready {
+            border-left-color: #10b981;
+        }
+        .status-item.error {
+            border-left-color: #ef4444;
+        }
+        .status-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .status-value {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .permission-guide {
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .permission-guide h3 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+        }
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .guide-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #f43f5e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .main-button {
+            background: linear-gradient(135deg, #f43f5e, #fb923c);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 30px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .main-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(244, 63, 94, 0.3);
+        }
+        .main-button.active {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            animation: pulse 2s infinite;
+        }
+        .main-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            animation: none;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .button-icon {
+            font-size: 3rem;
+        }
+        .button-text {
+            font-size: 1.5rem;
+        }
+        .conversation-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+        .message.user {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            margin-left: 20%;
+        }
+        .message.ai {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            margin-right: 20%;
+        }
+        .message.system {
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            text-align: center;
+        }
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .visualization {
+            height: 80px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 10px;
+        }
+        .wave-bar {
+            flex: 1;
+            background: linear-gradient(to top, #fb923c, #f43f5e);
+            border-radius: 2px;
+            min-height: 5px;
+            transition: height 0.1s ease;
+        }
+        .instructions {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .main-button {
+                padding: 15px 25px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>凤凰语音对话系统 修复版</h1>
+        <div class="subtitle">检测现有权限，直接开始语音对话</div>
+        
+        <div class="status-container">
+            <div class="status-item" id="browser-status">
+                <div class="status-label">浏览器支持</div>
+                <div class="status-value" id="browser-value">检测中...</div>
+            </div>
+            <div class="status-item" id="permission-status">
+                <div class="status-label">麦克风权限状态</div>
+                <div class="status-value" id="permission-value">检测中...</div>
+            </div>
+            <div class="status-item" id="recognition-status">
+                <div class="status-label">语音识别状态</div>
+                <div class="status-value" id="recognition-value">准备中...</div>
+            </div>
+        </div>
+        
+        <div class="permission-guide" id="permission-guide">
+            <h3>🎯 当前状态</h3>
+            <div id="status-detail" style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                <div>正在检测系统状态...</div>
+            </div>
+        </div>
+        
+        <button class="main-button" id="start-button" disabled>
+            <div class="button-icon">🎤</div>
+            <div class="button-text">检测完成即可开始</div>
+        </button>
+        
+        <div class="visualization" id="visualization">
+            <!-- 波形图条将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="conversation-log" id="conversation-log">
+            <div class="message system">
+                <div class="message-sender">系统通知</div>
+                <div>凤凰语音修复版正在初始化，自动检测现有权限...</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <strong>修复说明：</strong> 此版本直接检测现有麦克风权限状态，避免重复弹出权限对话框。<br>
+            如果已有权限，系统将自动准备语音识别功能。
+        </div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let isListening = false;
+        let hasPermission = false;
+        let audioContext = null;
+        let analyser = null;
+        let dataArray = null;
+        let rafId = null;
+        
+        // 添加系统消息
+        function addSystemMessage(text) {
+            addMessage('system', text, '系统通知');
+        }
+        
+        function addMessage(type, text, sender) {
+            const log = document.getElementById('conversation-log');
+            const messageDiv = document.createElement('div');
+            
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-sender">${sender}</div>
+                <div>${text}</div>
+            `;
+            
+            log.appendChild(messageDiv);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // 更新状态显示
+        function updateStatus(type, status, text) {
+            const item = document.getElementById(`${type}-status`);
+            const value = document.getElementById(`${type}-value`);
+            
+            if (item && value) {
+                value.textContent = text;
+                item.className = 'status-item';
+                
+                if (status === 'ready' || status === 'active' || status === 'granted') {
+                    item.classList.add('ready');
+                } else if (status === 'error') {
+                    item.classList.add('error');
+                }
+            }
+        }
+        
+        // 创建波形条
+        function createWaveformBars() {
+            const viz = document.getElementById('visualization');
+            viz.innerHTML = '';
+            
+            for (let i = 0; i < 40; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'wave-bar';
+                bar.style.height = '10px';
+                viz.appendChild(bar);
+            }
+        }
+        
+        // 检查浏览器支持
+        function checkBrowserSupport() {
+            const supported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+            updateStatus('browser', supported ? 'ready' : 'error', 
+                        supported ? '✅ 支持语音识别' : '❌ 浏览器不支持');
+            return supported;
+        }
+        
+        // 使用标准的Permissions API检查权限状态
+        async function checkPermissionWithAPI() {
+            addSystemMessage('使用Permissions API检测麦克风权限状态...');
+            
+            try {
+                // 优先使用Permissions API，如果浏览器支持的话
+                if (navigator.permissions && navigator.permissions.query) {
+                    const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                    
+                    addSystemMessage(`Permissions API检测结果: ${permissionStatus.state}`);
+                    
+                    if (permissionStatus.state === 'granted') {
+                        // 已有权限
+                        updateStatus('permission', 'granted', '✅ 已有麦克风权限');
+                        addSystemMessage('检测到已授予的麦克风权限');
+                        hasPermission = true;
+                        return true;
+                    } else if (permissionStatus.state === 'prompt') {
+                        // 需要请求权限
+                        updateStatus('permission', 'prompt', '⏳ 需要用户授权');
+                        addSystemMessage('麦克风权限待授权，将引导用户授权');
+                        return false;
+                    } else if (permissionStatus.state === 'denied') {
+                        // 权限被拒绝
+                        updateStatus('permission', 'error', '❌ 权限被拒绝');
+                        addSystemMessage('麦克风权限被拒绝，需要手动调整');
+                        return false;
+                    }
+                }
+                
+                // 如果浏览器不支持Permissions API，回退到getUserMedia检测
+                addSystemMessage('浏览器不支持Permissions API，使用getUserMedia检测...');
+                return await checkPermissionWithGetUserMedia();
+                
+            } catch (error) {
+                addSystemMessage(`权限检测失败: ${error.message}`);
+                return await checkPermissionWithGetUserMedia();
+            }
+        }
+        
+        // 使用getUserMedia检测权限
+        async function checkPermissionWithGetUserMedia() {
+            try {
+                // 尝试静默获取权限（如果已有权限，不会弹出对话框）
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true 
+                }).catch(() => null);
+                
+                if (stream) {
+                    // 已有权限
+                    updateStatus('permission', 'granted', '✅ 已有麦克风权限');
+                    addSystemMessage('getUserMedia成功获取音频流，权限已存在');
+                    hasPermission = true;
+                    
+                    // 尝试获取设备信息
+                    const tracks = stream.getAudioTracks();
+                    if (tracks.length > 0) {
+                        addSystemMessage(`音频设备: ${tracks[0].label || '未命名设备'}`);
+                    }
+                    
+                    // 立即释放流
+                    stream.getTracks().forEach(track => track.stop());
+                    return true;
+                } else {
+                    // 需要权限
+                    updateStatus('permission', 'prompt', '⏳ 需要配置权限');
+                    addSystemMessage('需要配置麦克风权限才能使用语音功能');
+                    return false;
+                }
+            } catch (error) {
+                updateStatus('permission', 'error', `❌ 权限错误: ${error.name}`);
+                addSystemMessage(`权限检测异常: ${error.name}: ${error.message}`);
+                return false;
+            }
+        }
+        
+        // 使用已存在的权限初始化语音识别
+        function initSpeechRecognitionWithPermission() {
+            addSystemMessage('初始化语音识别引擎...');
+            
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.lang = 'zh-CN';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.maxAlternatives = 1;
+                
+                recognition.onstart = () => {
+                    addSystemMessage('✅ 语音识别已启动，可以开始对话');
+                    updateStatus('recognition', 'active', '🎤 监听中...');
+                    createWaveformBars();
+                    updateButtonState(true);
+                };
+                
+                recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    if (finalTranscript.trim()) {
+                        handleUserSpeech(finalTranscript);
+                    }
+                };
+                
+                recognition.onerror = (event) => {
+                    if (event.error === 'no-speech' || event.error === 'audio-capture') {
+                        // 静默错误，自动恢复
+                        setTimeout(() => {
+                            if (isListening && recognition) {
+                                recognition.start();
+                            }
+                        }, 1000);
+                    } else {
+                        addSystemMessage(`语音识别错误: ${event.error}`);
+                        updateStatus('recognition', 'error', `错误: ${event.error}`);
+                    }
+                };
+                
+                recognition.onend = () => {
+                    addSystemMessage('语音识别会话结束');
+                    if (isListening && recognition) {
+                        // 自动重新开始
+                        setTimeout(() => {
+                            try {
+                                recognition.start();
+                                addSystemMessage('重新启动语音识别');
+                            } catch (error) {
+                                console.log('重新启动失败:', error);
+                            }
+                        }, 500);
+                    }
+                };
+                
+                addSystemMessage('✅ 语音识别引擎初始化成功');
+                updateStatus('recognition', 'ready', '✅ 准备就绪');
+                return true;
+                
+            } catch (error) {
+                addSystemMessage(`❌ 语音识别初始化失败: ${error.message}`);
+                updateStatus('recognition', 'error', '初始化失败');
+                return false;
+            }
+        }
+        
+        // 处理用户语音
+        function handleUserSpeech(text) {
+            addMessage('user', text, '你');
+            
+            // 模拟AI处理延迟
+            setTimeout(() => {
+                const response = generateAIResponse(text);
+                addMessage('ai', response, '凤凰AI');
+                
+                // 语音播报提示
+                addSystemMessage(`AI已回复，内容: "${response}"`);
+            }, 800 + Math.random() * 500);
+        }
+        
+        // 生成AI回复
+        function generateAIResponse(text) {
+            const lowerText = text.toLowerCase();
+            
+            if (lowerText.includes('你好') || lowerText.includes('在吗')) {
+                return '你好！我是凤凰AI修复版，权限检测正确，语音系统工作正常！';
+            } else if (lowerText.includes('时间')) {
+                return `现在是 ${new Date().toLocaleTimeString('zh-CN')}`;
+            } else if (lowerText.includes('权限') || lowerText.includes('修复')) {
+                return '系统已修复权限检测问题，无需重复授权，直接可用。';
+            } else if (lowerText.includes('测试')) {
+                return '测试成功！语音识别和AI回复都工作正常。';
+            } else {
+                return `我听到你说："${text}"。修复版语音系统运行正常！`;
+            }
+        }
+        
+        // 更新按钮状态
+        function updateButtonState(enabled) {
+            const button = document.getElementById('start-button');
+            
+            if (enabled) {
+                button.disabled = false;
+                button.innerHTML = `
+                    <div class="button-icon">🎤</div>
+                    <div class="button-text">开始语音对话</div>
+                `;
+                button.onclick = toggleSpeechRecognition;
+            } else {
+                button.disabled = true;
+                button.innerHTML = `
+                    <div class="button-icon">🔧</div>
+                    <div class="button-text">请等待系统初始化</div>
+                `;
+            }
+        }
+        
+        // 开始/停止语音对话
+        function toggleSpeechRecognition() {
+            const button = document.getElementById('start-button');
+            
+            if (!isListening) {
+                // 开始对话
+                if (!recognition) {
+                    addSystemMessage('错误: 语音识别未初始化');
+                    return;
+                }
+                
+                isListening = true;
+                button.classList.add('active');
+                button.innerHTML = `
+                    <div class="button-icon">🎙️</div>
+                    <div class="button-text">对话进行中（点击停止）</div>
+                `;
+                
+                try {
+                    recognition.start();
+                    addSystemMessage('🎤 开始语音对话，请对着麦克风说话...');
+                } catch (error) {
+                    addSystemMessage(`启动失败: ${error.message}`);
+                    isListening = false;
+                    button.classList.remove('active');
+                    button.innerHTML = `
+                        <div class="button-icon">🎤</div>
+                        <div class="button-text">开始语音对话</div>
+                    `;
+                }
+            } else {
+                // 停止对话
+                isListening = false;
+                button.classList.remove('active');
+                button.innerHTML = `
+                    <div class="button-icon">🎤</div>
+                    <div class="button-text">开始语音对话</div>
+                `;
+                
+                if (recognition) {
+                    recognition.stop();
+                }
+                
+                addSystemMessage('⏹️ 语音对话已停止');
+                updateStatus('recognition', 'ready', '✅ 就绪');
+            }
+        }
+        
+        // 主初始化流程
+        async function initializeSystem() {
+            addSystemMessage('🚀 开始初始化凤凰语音修复版...');
+            
+            // 步骤1: 检查浏览器支持
+            const browserSupported = checkBrowserSupport();
+            if (!browserSupported) {
+                addSystemMessage('❌ 浏览器不支持语音功能，初始化终止');
+                return;
+            }
+            
+            // 步骤2: 检测麦克风权限
+            addSystemMessage('🔍 检测麦克风权限状态...');
+            const hasMicPermission = await checkPermissionWithAPI();
+            
+            if (hasMicPermission) {
+                addSystemMessage('✅ 确认已有麦克风权限');
+                
+                // 步骤3: 初始化语音识别
+                const recognitionInitialized = initSpeechRecognitionWithPermission();
+                
+                if (recognitionInitialized) {
+                    // 步骤4: 启用开始按钮
+                    updateButtonState(true);
+                    addSystemMessage('🎯 系统初始化完成！可以点击"开始语音对话"按钮。');
+                    
+                    // 更新权限指南
+                    document.getElementById('status-detail').innerHTML = `
+                        <div style="color: #10b981; font-weight: bold;">
+                            ✅ 检测到已有麦克风权限<br>
+                            ✅ 语音识别引擎初始化完成<br>
+                            ✅ 系统已准备就绪
+                        </div>
+                    `;
+                } else {
+                    addSystemMessage('❌ 语音识别初始化失败');
+                    updateButtonState(false);
+                }
+            } else {
+                addSystemMessage('❌ 未检测到麦克风权限');
+                updateButtonState(false);
+                
+                document.getElementById('status-detail').innerHTML = `
+                    <div style="color: #fbbf24;">
+                        <strong>需要配置权限:</strong><br>
+                        1. 点击浏览器地址栏左侧的🔒或🚫图标<br>
+                        2. 找到"麦克风"权限设置<br>
+                        3. 选择"允许"<br>
+                        4. 刷新此页面
+                    </div>
+                `;
+            }
+        }
+        
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', () => {
+            // 立即开始初始化
+            setTimeout(initializeSystem, 500);
+        });
+        
+        // 页面卸载时清理
+        window.addEventListener('beforeunload', () => {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+            
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+            }
+        });
+    </script>
+</body>
+</html>

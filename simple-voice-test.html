@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音功能测试 - 最小可用版本</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4f8d4; color: #006600; }
+        .error { background: #ffcccc; color: #cc0000; }
+        .warning { background: #fff3cd; color: #856404; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔄 语音功能真实测试</h1>
+        
+        <div class="step">
+            <h3>步骤1: 检查浏览器支持</h3>
+            <div id="support-status" class="status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>步骤2: 测试麦克风权限</h3>
+            <button id="test-mic-btn">测试麦克风权限</button>
+            <div id="mic-status" class="status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>步骤3: 测试语音识别</h3>
+            <button id="start-btn" disabled>🎤 开始语音识别测试</button>
+            <div id="recognition-status" class="status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>步骤4: 识别结果</h3>
+            <div id="result-box" style="padding: 15px; background: #e9ecef; border-radius: 5px; min-height: 100px;"></div>
+        </div>
+        
+        <h3>系统日志</h3>
+        <div id="log"></div>
+        
+        <div style="margin-top: 30px; font-size: 12px; color: #666;">
+            <strong>测试目的:</strong> 验证语音API在您的环境中是否实际可用
+            <br>✅ 可用 → 继续开发完整功能
+            <br>❌ 不可用 → 寻找替代方案
+        </div>
+    </div>
+
+    <script>
+        const logArea = document.getElementById('log');
+        let recognition = null;
+        let isListening = false;
+        
+        // 日志函数
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('zh-CN', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit'
+            });
+            const entry = document.createElement('div');
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            entry.style.color = type === 'error' ? '#cc0000' : 
+                               type === 'success' ? '#006600' : '#666';
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        // 步骤1: 检查浏览器支持
+        function checkBrowserSupport() {
+            log('检查浏览器语音支持...');
+            
+            const supportStatus = document.getElementById('support-status');
+            
+            // 检查语音识别
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                supportStatus.className = 'status success';
+                supportStatus.innerHTML = '✅ 浏览器支持语音识别 (SpeechRecognition API)';
+                log('检测到语音识别API支持');
+                
+                // 如果支持，启用开始按钮
+                document.getElementById('start-btn').disabled = false;
+                
+            } else {
+                supportStatus.className = 'status error';
+                supportStatus.innerHTML = '❌ 浏览器不支持语音识别功能';
+                log('错误: 浏览器不支持语音识别API', 'error');
+                return false;
+            }
+            
+            // 检查麦克风API
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                log('检测到麦克风API支持');
+            } else {
+                log('警告: 麦克风API可能不受支持', 'error');
+            }
+            
+            return true;
+        }
+        
+        // 步骤2: 测试麦克风权限
+        document.getElementById('test-mic-btn').addEventListener('click', async function() {
+            log('请求麦克风权限...');
+            const micStatus = document.getElementById('mic-status');
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 16000
+                    }
+                });
+                
+                micStatus.className = 'status success';
+                micStatus.innerHTML = '✅ 麦克风权限获取成功';
+                log('麦克风权限获取成功，音频设备:', stream.getAudioTracks()[0].label);
+                
+                // 停止流以释放资源
+                stream.getTracks().forEach(track => track.stop());
+                
+            } catch (error) {
+                micStatus.className = 'status error';
+                micStatus.innerHTML = `❌ 麦克风权限被拒绝: ${error.message}`;
+                log(`麦克风权限错误: ${error.message}`, 'error');
+                
+                // 提供修复建议
+                const resultBox = document.getElementById('result-box');
+                resultBox.innerHTML = `
+                    <h4>如何解决权限问题:</h4>
+                    <ol style="text-align: left;">
+                        <li>点击浏览器地址栏左侧的锁形图标 🔒</li>
+                        <li>找到"麦克风"或"音频"权限</li>
+                        <li>选择"允许"或"始终允许"</li>
+                        <li>刷新页面重试</li>
+                    </ol>
+                `;
+            }
+        });
+        
+        // 步骤3: 测试语音识别
+        document.getElementById('start-btn').addEventListener('click', function() {
+            const btn = this;
+            const recognitionStatus = document.getElementById('recognition-status');
+            
+            if (isListening) {
+                // 停止录音
+                if (recognition) {
+                    recognition.stop();
+                }
+                isListening = false;
+                btn.innerHTML = '🎤 开始语音识别测试';
+                btn.style.background = '#007bff';
+                recognitionStatus.className = 'status warning';
+                recognitionStatus.innerHTML = '⏹️ 语音识别已停止';
+                log('语音识别停止');
+                return;
+            }
+            
+            // 开始录音
+            log('初始化语音识别...');
+            
+            // 初始化语音识别
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.lang = 'zh-CN';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                isListening = true;
+                btn.innerHTML = '⏹️ 停止测试 (正在听你说...)';
+                btn.style.background = '#dc3545';
+                recognitionStatus.className = 'status success';
+                recognitionStatus.innerHTML = '🎤 正在听你说...';
+                log('语音识别已开始，请开始说话');
+                
+                const resultBox = document.getElementById('result-box');
+                resultBox.innerHTML = '<div style="color: #666;">正在听你说... 请对着麦克风说话</div>';
+            };
+            
+            recognition.onresult = (event) => {
+                const resultBox = document.getElementById('result-box');
+                let finalTranscript = '';
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                if (interimTranscript) {
+                    resultBox.innerHTML = `
+                        <div style="color: #666;">正在识别: <strong>"${interimTranscript}"</strong></div>
+                    `;
+                }
+                
+                if (finalTranscript) {
+                    resultBox.innerHTML = `
+                        <div style="color: #006600; font-size: 18px; margin-bottom: 10px;">
+                            ✅ 识别成功!
+                        </div>
+                        <div style="background: #d4f8d4; padding: 15px; border-radius: 5px; border: 1px solid #a3d9a3;">
+                            <strong>识别结果:</strong> "${finalTranscript}"
+                        </div>
+                        <div style="margin-top: 15px; color: #666;">
+                            识别工作正常! 语音系统可用。
+                        </div>
+                    `;
+                    log(`识别结果: "${finalTranscript}"`, 'success');
+                    
+                    // 自动停止识别
+                    setTimeout(() => {
+                        if (recognition) {
+                            recognition.stop();
+                        }
+                    }, 2000);
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                log(`语音识别错误: ${event.error}`, 'error');
+                recognitionStatus.className = 'status error';
+                recognitionStatus.innerHTML = `❌ 错误: ${event.error}`;
+                
+                isListening = false;
+                btn.innerHTML = '🎤 开始语音识别测试';
+                btn.style.background = '#007bff';
+                
+                const resultBox = document.getElementById('result-box');
+                resultBox.innerHTML = `
+                    <div style="color: #cc0000; padding: 15px; background: #ffcccc; border-radius: 5px;">
+                        <strong>错误:</strong> ${event.error}
+                        <br><br>
+                        可能的原因:
+                        <ul style="text-align: left;">
+                            <li>麦克风未连接或未启用</li>
+                            <li>麦克风权限被拒绝</li>
+                            <li>网络连接问题</li>
+                        </ul>
+                    </div>
+                `;
+            };
+            
+            recognition.onend = () => {
+                if (isListening) {
+                    // 如果不是手动停止，自动重新开始
+                    log('识别会话结束，尝试重新启动...');
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            log(`重新启动失败: ${e.message}`, 'error');
+                        }
+                    }, 500);
+                } else {
+                    log('语音识别已完全停止');
+                    recognitionStatus.className = 'status warning';
+                    recognitionStatus.innerHTML = '⏹️ 语音识别已停止';
+                    btn.innerHTML = '🎤 开始语音识别测试';
+                    btn.style.background = '#007bff';
+                }
+            };
+            
+            try {
+                recognition.start();
+            } catch (error) {
+                log(`启动识别失败: ${error.message}`, 'error');
+                recognitionStatus.className = 'status error';
+                recognitionStatus.innerHTML = `❌ 启动失败: ${error.message}`;
+            }
+        });
+        
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            log('页面加载完成，开始测试...');
+            checkBrowserSupport();
+        });
+        
+        // 提示用户操作
+        setTimeout(() => {
+            log('请按步骤测试: 1.检查支持 2.测试麦克风 3.尝试语音识别');
+        }, 500);
+    </script>
+</body>
+</html>

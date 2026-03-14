@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频权限诊断工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .log-entry.success {
+            background: #d4f8d4;
+            color: #006600;
+        }
+        .log-entry.error {
+            background: #ffcccc;
+            color: #cc0000;
+        }
+        .log-entry.info {
+            background: #e6f2ff;
+            color: #0066cc;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-good {
+            background: #28a745;
+        }
+        .status-bad {
+            background: #dc3545;
+        }
+        .status-unknown {
+            background: #ffc107;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>🔍 音频权限诊断工具</h1>
+    
+    <div class="test-section">
+        <div class="test-title">步骤1: 检查浏览器API支持</div>
+        <button class="test-button" onclick="testBrowserSupport()">检查浏览器支持</button>
+        <div id="support-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">步骤2: 简单权限测试（无用户手势要求）</div>
+        <button class="test-button" onclick="testSimplePermission()">简单权限测试</button>
+        <div id="simple-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">步骤3: 标准权限测试（用户手势后）</div>
+        <button class="test-button" onclick="testStandardPermission()">标准权限测试</button>
+        <div id="standard-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">步骤4: 检查已存在的权限状态</div>
+        <button class="test-button" onclick="checkExistingPermission()">检查权限状态</button>
+        <button class="test-button" onclick="clearPermissionState()">清除权限状态</button>
+        <div id="permission-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">步骤5: 强制权限请求（新窗口）</div>
+        <button class="test-button" onclick="forcePermissionNewWindow()">强制请求（新窗口）</button>
+        <div id="force-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">步骤6: 页面刷新修复</div>
+        <button class="test-button" onclick="reloadWithCleanState()">刷新页面（清除状态）</button>
+        <div id="reload-result"></div>
+    </div>
+    
+    <h3>测试日志</h3>
+    <div id="log"></div>
+    
+    <div style="margin-top: 30px; font-size: 12px; color: #666;">
+        <strong>系统信息:</strong> 
+        浏览器: <span id="browser-info">检测中...</span><br>
+        URL: <span id="url-info">检测中...</span><br>
+        时间: <span id="time-info">检测中...</span>
+    </div>
+</div>
+
+<script>
+    let logCount = 0;
+    
+    function log(message, type = 'info') {
+        const logArea = document.getElementById('log');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${type}`;
+        
+        const timestamp = new Date().toLocaleTimeString('zh-CN', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit'
+        });
+        
+        entry.innerHTML = `<span class="status-indicator ${type === 'success' ? 'status-good' : type === 'error' ? 'status-bad' : 'status-unknown'}"></span> [${timestamp}] ${message}`;
+        logArea.appendChild(entry);
+        logArea.scrollTop = logArea.scrollHeight;
+        
+        logCount++;
+        if (logCount > 50) {
+            logArea.removeChild(logArea.firstChild);
+            logCount--;
+        }
+    }
+    
+    function updateResult(elementId, message, isSuccess = null) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = message;
+        if (isSuccess === true) {
+            element.style.color = '#006600';
+        } else if (isSuccess === false) {
+            element.style.color = '#cc0000';
+        } else {
+            element.style.color = '#666';
+        }
+    }
+    
+    // 初始化系统信息
+    function initSystemInfo() {
+        document.getElementById('browser-info').textContent = navigator.userAgent.substring(0, 100);
+        document.getElementById('url-info').textContent = window.location.href;
+        document.getElementById('time-info').textContent = new Date().toLocaleString('zh-CN');
+    }
+    
+    // 步骤1: 检查浏览器支持
+    function testBrowserSupport() {
+        log('开始检查浏览器API支持...');
+        
+        const results = [];
+        let allSupported = true;
+        
+        // 检查navigator.mediaDevices
+        if (navigator.mediaDevices) {
+            results.push('✅ navigator.mediaDevices 存在');
+            log('检测到 navigator.mediaDevices API');
+        } else {
+            results.push('❌ navigator.mediaDevices 不存在');
+            log('错误: navigator.mediaDevices API 不存在', 'error');
+            allSupported = false;
+        }
+        
+        // 检查 getUserMedia
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            results.push('✅ getUserMedia API 存在');
+            log('检测到 getUserMedia API');
+        } else {
+            results.push('❌ getUserMedia API 不存在');
+            log('错误: getUserMedia API 不存在', 'error');
+            allSupported = false;
+        }
+        
+        // 检查 AudioContext
+        if (window.AudioContext || window.webkitAudioContext) {
+            results.push('✅ AudioContext API 存在');
+            log('检测到 AudioContext API');
+        } else {
+            results.push('❌ AudioContext API 不存在');
+            log('警告: AudioContext API 不存在', 'info');
+        }
+        
+        // 检查 SpeechRecognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            results.push('✅ SpeechRecognition API 存在');
+            log('检测到 SpeechRecognition API');
+        } else {
+            results.push('❌ SpeechRecognition API 不存在');
+            log('警告: SpeechRecognition API 不存在', 'info');
+        }
+        
+        updateResult('support-result', results.join('<br>'), allSupported);
+        log(`浏览器支持检查完成: ${allSupported ? '全部通过' : '有未支持的API'}`);
+    }
+    
+    // 步骤2: 简单权限测试
+    async function testSimplePermission() {
+        log('开始简单权限测试...');
+        updateResult('simple-result', '⏳ 正在测试...');
+        
+        try {
+            // 尝试获取权限（不捕获错误）
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            
+            updateResult('simple-result', '✅ 简单权限测试成功！已获取麦克风权限', true);
+            log('成功获取麦克风权限', 'success');
+            
+            // 显示设备信息
+            const audioTracks = stream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                const track = audioTracks[0];
+                log(`音频设备: ${track.label || '未命名设备'}`, 'success');
+                log(`设备ID: ${track.id.substring(0, 20)}...`, 'info');
+            }
+            
+            // 释放流
+            stream.getTracks().forEach(track => track.stop());
+            log('已释放音频流', 'info');
+            
+        } catch (error) {
+            updateResult('simple-result', `❌ 简单权限测试失败: ${error.name}: ${error.message}`, false);
+            log(`权限测试失败: ${error.name}: ${error.message}`, 'error');
+            
+            // 提供具体建议
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                log('权限被拒绝。可能需要: 1) 检查浏览器权限设置 2) 刷新页面 3) 手动授权', 'error');
+            } else if (error.name === 'NotFoundError') {
+                log('没有找到麦克风设备。请检查麦克风是否连接。', 'error');
+            } else if (error.name === 'NotReadableError') {
+                log('麦克风设备无法读取。可能被其他应用占用。', 'error');
+            }
+        }
+    }
+    
+    // 步骤3: 标准权限测试
+    async function testStandardPermission() {
+        log('开始标准权限测试（用户手势后）...');
+        updateResult('standard-result', '⏳ 正在测试...');
+        
+        try {
+            // 使用更详细的权限配置
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    sampleRate: 16000,
+                    channelCount: 1
+                }
+            });
+            
+            updateResult('standard-result', '✅ 标准权限测试成功！麦克风配置可用', true);
+            log('标准权限测试成功', 'success');
+            
+            // 测试AudioContext
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                source.connect(analyser);
+                
+                analyser.fftSize = 256;
+                log('音频分析器配置成功', 'success');
+                
+                // 延迟关闭
+                setTimeout(() => {
+                    stream.getTracks().forEach(track => track.stop());
+                    audioContext.close();
+                    log('已释放所有音频资源', 'info');
+                }, 1000);
+                
+            } catch (innerError) {
+                log(`音频上下文测试失败: ${innerError.message}`, 'info');
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+        } catch (error) {
+            updateResult('standard-result', `❌ 标准权限测试失败: ${error.name}: ${error.message}`, false);
+            log(`标准权限测试失败: ${error.name}: ${error.message}`, 'error');
+        }
+    }
+    
+    // 步骤4: 检查现有权限状态
+    async function checkExistingPermission() {
+        log('检查现有权限状态...');
+        
+        try {
+            // 使用permissions API检查权限状态
+            if (navigator.permissions && navigator.permissions.query) {
+                const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                
+                updateResult('permission-result', 
+                    `权限状态: ${permissionStatus.state}<br>
+                     可以更改: ${permissionStatus.state === 'prompt' ? '是（会弹出对话框）' : '已确定'}<br>
+                     上次更新: ${new Date().toLocaleTimeString('zh-CN')}`, 
+                    permissionStatus.state === 'granted');
+                
+                log(`权限API查询结果: ${permissionStatus.state}`, 
+                    permissionStatus.state === 'granted' ? 'success' : 
+                    permissionStatus.state === 'prompt' ? 'info' : 'error');
+                
+                // 监听权限变化
+                permissionStatus.onchange = () => {
+                    log(`权限状态变化为: ${permissionStatus.state}`, 'info');
+                    updateResult('permission-result', 
+                        `权限状态更新: ${permissionStatus.state} (${new Date().toLocaleTimeString('zh-CN')})`,
+                        permissionStatus.state === 'granted');
+                };
+                
+            } else {
+                updateResult('permission-result', '⚠️ 浏览器不支持权限查询API', null);
+                log('警告: 浏览器不支持权限查询API', 'info');
+            }
+            
+        } catch (error) {
+            updateResult('permission-result', `❌ 权限查询失败: ${error.message}`, false);
+            log(`权限查询错误: ${error.message}`, 'error');
+        }
+    }
+    
+    // 清除权限状态
+    async function clearPermissionState() {
+        log('尝试清除权限状态...');
+        updateResult('permission-result', '⏳ 正在清除...');
+        
+        // 无法真正清除权限，但可以提供指令
+        const instructions = `
+            <strong>如何清除权限:</strong><br>
+            1. 点击浏览器地址栏左侧的锁形图标 🔒<br>
+            2. 找到"麦克风"或"音频"权限<br>
+            3. 选择"重置权限"或"清除设置"<br>
+            4. 刷新页面后重试
+        `;
+        
+        updateResult('permission-result', instructions, null);
+        log('提供权限清除指导', 'info');
+    }
+    
+    // 步骤5: 强制权限请求（新窗口）
+    function forcePermissionNewWindow() {
+        log('尝试在新窗口请求权限...');
+        
+        // 创建新窗口
+        const newWindow = window.open('', '_blank', 'width=400,height=300');
+        
+        if (!newWindow) {
+            updateResult('force-result', '❌ 无法打开新窗口（可能被浏览器阻止）', false);
+            log('错误: 无法打开新窗口，可能被弹出窗口阻止程序拦截', 'error');
+            return;
+        }
+        
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head><title>音频权限测试</title></head>
+            <body style="margin: 20px; font-family: Arial;">
+                <h3>新窗口权限测试</h3>
+                <p>点击下方按钮测试权限:</p>
+                <button onclick="testPermission()" style="padding: 10px 20px; font-size: 16px;">
+                    测试麦克风权限
+                </button>
+                <div id="result" style="margin-top: 20px;"></div>
+                <script>
+                    async function testPermission() {
+                        const result = document.getElementById('result');
+                        try {
+                            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                            result.innerHTML = '<span style="color: green;">✅ 权限获取成功!</span>';
+                            stream.getTracks().forEach(track => track.stop());
+                        } catch (error) {
+                            result.innerHTML = '<span style="color: red;">❌ 错误: ' + error.message + '</span>';
+                        }
+                    }
+                    // 自动测试
+                    setTimeout(testPermission, 100);
+                <\/script>
+            </body>
+            </html>
+        `;
+        
+        newWindow.document.write(html);
+        updateResult('force-result', '✅ 新窗口已打开，正在测试权限...', null);
+        log('新窗口权限测试已启动', 'info');
+    }
+    
+    // 步骤6: 页面刷新修复
+    function reloadWithCleanState() {
+        log('刷新页面以清除状态...');
+        updateResult('reload-result', '⏳ 正在刷新页面...');
+        
+        // 添加清理参数
+        const url = new URL(window.location.href);
+        url.searchParams.set('clean', Date.now());
+        url.searchParams.set('test', 'audio');
+        
+        // 延迟刷新
+        setTimeout(() => {
+            window.location.href = url.toString();
+        }, 500);
+    }
+    
+    // 页面加载初始化
+    window.addEventListener('DOMContentLoaded', () => {
+        log('音频权限诊断工具已加载', 'success');
+        initSystemInfo();
+        testBrowserSupport();
+        
+        // 自动进行基本检查
+        setTimeout(() => {
+            checkExistingPermission();
+        }, 1000);
+    });
+    
+    // 捕获可能的控制台错误
+    window.addEventListener('error', (event) => {
+        log(`全局错误: ${event.message}`, 'error');
+    });
+</script>
+</body>
+</html>

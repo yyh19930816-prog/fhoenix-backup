@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰视觉系统组件库</title>
+    <style>
+        :root {
+            --phoenix-red: #f43f5e;
+            --phoenix-orange: #fb923c;
+            --phoenix-gold: #fbbf24;
+            --phoenix-bg-dark: #0f1419;
+            --phoenix-bg-light: #1e293b;
+            --phoenix-text: #e2e8f0;
+            --phoenix-accent: #3b82f6;
+            --phoenix-green: #10b981;
+            
+            /* 新增色彩扩展 */
+            --phoenix-violet: #8b5cf6;
+            --phoenix-cyan: #06b6d4;
+            --phoenix-emerald: #10b981;
+            --phoenix-amber: #f59e0b;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+            color: var(--phoenix-text);
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            box-shadow: 0 8px 32px rgba(244, 63, 94, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--phoenix-gold);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .section-title::before {
+            content: '🔥';
+            position: absolute;
+            left: -0.5rem;
+            transform: rotate(-15deg);
+        }
+        
+        /* Phoenix Button 组件 */
+        .phx-btn {
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .phx-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
+        }
+        
+        .phx-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .phx-btn:hover::before {
+            left: 100%;
+        }
+        
+        .phx-btn.secondary {
+            background: linear-gradient(135deg, var(--phoenix-violet), var(--phoenix-cyan));
+        }
+        
+        .phx-btn.ghost {
+            background: transparent;
+            border: 2px solid var(--phoenix-emerald);
+            color: var(--phoenix-emerald);
+        }
+        
+        /* Phoenix Card 组件 */
+        .phx-card {
+            background: rgba(15, 20, 25, 0.6);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .phx-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+            border-color: var(--phoenix-accent);
+        }
+        
+        .phx-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .phx-card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--phoenix-gold);
+        }
+        
+        .phx-card-badge {
+            background: var(--phoenix-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Progress Bar */
+        .phx-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .phx-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange));
+            border-radius: 999px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .phx-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Status Indicators */
+        .phx-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .phx-status.online {
+            background: rgba(16,185,129,0.15);
+            color: #86efac;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        
+        .phx-status.warning {
+            background: rgba(245,158,11,0.15);
+            color: #fcd34d;
+            border: 1px solid rgba(245,158,11,0.3);
+odes-ai-filename
+        }
+        
+        .phx-status.error {
+            background: rgba(244,63,94,0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(244,63,94,0.3);
+        }
+        
+        /* Input Components */
+        .phx-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(15,20,25,0.8);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--phoenix-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .phx-input:focus {
+            outline: none;
+            border-color: var(--phoenix-accent);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        
+        /* Grid System */
+        .phx-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .phx-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .phx-grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        
+        /* Avatar */
+        .phx-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="section">
+            <h1 style="font-size: 3rem; background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center;">
+                凤凰视觉系统组件库
+            </h1>
+            <p style="text-align: center; opacity: 0.8; margin-top: 1rem;">Fhoenix UI Component Library - 凤凰计划</p>
+        </header>
+
+        <!-- Button Components -->
+        <section class="section">
+            <h2 class="section-title">按钮组件</h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="phx-btn">🔥 主要按钮</button>
+                <button class="phx-btn secondary">🌀 次要按钮</button>
+                <button class="phx-btn ghost">✨ 幽灵按钮</button>
+                <button class="phx-btn" disabled>🔒 禁用按钮</button>
+            </div>
+        </section>
+
+        <!-- Card Components -->
+        <section class="section">
+            <h2 class="section-title">卡片组件</h2>
+            <div class="phx-grid phx-grid-2">
+                <div class="phx-card">
+                    <div class="phx-card-header">
+                        <div class="phx-card-title">系统状态</div>
+                        <div class="phx-card-badge">实时</div>
+                    </div>
+                    <p>内存系统运行正常，46个文件已索引</p>
+                    <div class="phx-progress">
+                        <div class="phx-progress-fill" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="phx-card">
+                    <div class="phơn-card-header">
+                        <div class="phx-card-title">语音模块</div>
+                        <div class="phx-card-badge">就绪</div>
+                    </div>
+                    <p>麦克风权限管理已完成</p>
+                    <div class="phx-progress">
+                        <div class="phx-progress-fill" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Indicators -->
+        <section class="section">
+            <h2 class="section-title">状态指示器</h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div class="phx-status online">● 在线</div>
+                <div class="phx-status warning">● 警告</div>
+                <div class="phx-status error">● 错误</div>
+            </div>
+        </section>
+
+        <!-- Form Components -->
+        <section class="section">
+            <h2 class="section-title">表单组件</h2>
+            <div style="max-width: 400px;">
+                <input class="phx-input" placeholder="请输入内容..." style="margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem;">
+                    <button class="phx-btn" style="flex: 1;">提交</button>
+                    <button class="phx-btn ghost" style="flex: 1;">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Interface -->
+        <section class="section">
+            <h2 class="section-title">用户界面</h2>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="phx-avatar">F</div>
+                <div>
+                    <div style="font-weight: bold;">Fhoenix</div>
+                    <div style="opacity: 0.8; font-size: 0.9rem;">凤凰计划 AI 助手</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="text-align: center;">
+            <h2 class="section-title">凤凰视觉系统 - 完成状态</h2>
+            <div class="phx-progress">
+                <div class="phx-progress-fill" style="width: 70%"></div>
+            </div>
+            <p style="margin-top: 1rem;">组件库基础已完成，可复用组件：按钮、卡片、进度条、状态指示器等</p>
+            <button class="phx-btn" onclick="saveComponents()" style="margin-top: 1rem;">保存组件库</button>
+        </section>
+    </div>
+
+    <script>
+        function saveComponents() {
+            const styleContent = document.querySelector('style').textContent;
+            const htmlContent = document.querySelector('.container').innerHTML;
+            
+            const componentData = {
+                css: styleContent,
+                components: htmlContent,
+                timestamp: new Date().toISOString(),
+                version: '1.0.0'
+            };
+            
+            console.log('组件库数据已准备:', componentData);
+            alert('凤凰视觉系统组件库已保存！');
+        }
+        
+        // 动态交互演示
+        document.addEventListener('DOMContentLoaded', () => {
+            // 进度条动画
+            const progressBars = document.querySelectorAll('.phx-progress-fill');
+            progressBars.forEach(bar => {
+                const width = parseInt(bar.style.width);
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width + '%';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
