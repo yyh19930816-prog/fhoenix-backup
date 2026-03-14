@@ -1,0 +1,9 @@
+{
+  "microphoneGranted": false,
+  "lastPromptTime": null,
+  "userPreferences": {
+    "autoPermit": true,
+    "rememberBrowser": false,
+    "audioCodec": "opus"
+  }
+}

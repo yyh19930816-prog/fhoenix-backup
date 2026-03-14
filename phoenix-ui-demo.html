@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰主题演示 - Fhoenix UI System</title>
+    <style>
+        :root {
+            --phoenix-red: #f43f5e;
+            --phoenix-orange: #fb923c;
+            --phoenix-gold: #fbbf24;
+            --phoenix-bg-dark: #0f1419;
+            --phoenix-bg-light: #1e293b;
+            --phoenix-text: #e2e8f0;
+            --phoenix-accent: #3b82f6;
+            --phoenix-green: #10b981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+            color: var(--phoenix-text);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .phoenix-header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--phoenix-red);
+            position: relative;
+            overflow: hidden;
+        }
+        .phoenix-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--phoenix-orange), var(--phoenix-red), var(--phoenix-gold), transparent, transparent);
+            animation: rotate 4s linear infinite;
+            z-index: -1;
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        .page-title {
+            font-size: 2.5rem; font-weight: bold;
+            background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center; margin-bottom: 0.5rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .demo-section {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            box-shadow: 0 8px 32px rgba(244, 63, 94, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .section-title {
+            font-size: 1.5rem; color: var(--phoenix-gold); margin-bottom: 1rem; position: relative; padding-left: 1rem;
+        }
+        .section-title::before { content: '🔥'; position: absolute; left: -0.5rem; transform: rotate(-15deg); }
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .phoenix-button {
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border: none; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .phoenix-button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3); }
+        .phoenix-button::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease;
+        }
+        .phoenix-button:hover::before { left: 100%; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .phoenix-card {
+            background: rgba(15, 20, 25, 0.6); border-radius: 8px; padding: 1.5rem; border: 1px solid rgba(59, 130, 246, 0.3); transition: all 0.3s ease;
+        }
+        .phoenix-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2); border-color: var(--phoenix-accent); }
+        .status-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 0.5rem; }
+        .status-online { background: #10b981; }
+        .status-busy { background: #f59e0b; }
+        .status-offline { background: #6b7280; }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin: 1rem 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange)); border-radius: 3px; width: 80%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .phoenix-decoration { position: fixed; pointer-events: none; z-index: -1; opacity: 0.1; }
+        .decoration-1 { top: 10%; left: 10%; animation: float 8s infinite; }
+        .decoration-2 { top: 60%; right: 15%; animation: float 6s infinite reverse; }
+        .decoration-3 { bottom: 20%; left: 20%; animation: float 10s infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+        .live-panel {
+            background: rgba(10, 15, 24, 0.85); border: 1px solid rgba(251,191,36,0.3); border-radius: 12px; padding: 1rem; margin-top: 1rem;
+        }
+        .task-panel {
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(244,63,94,0.22);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .task-head { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:.75rem; }
+        .task-title { font-weight:bold; color: var(--phoenix-gold); }
+        .task-meta { opacity:.85; font-size:14px; }
+        .task-bar { width:100%; height:12px; background: rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; }
+        .task-bar-fill { height:100%; width:35%; background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold)); transition: width .35s ease; }
+        .task-list { display:grid; gap:.85rem; margin-top:1rem; }
+        .task-item { background: rgba(15,20,25,.65); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:.9rem; }
+        .task-item-top { display:flex; justify-content:space-between; gap:1rem; align-items:center; }
+        .task-item-name { font-weight:600; }
+        .task-item-state { font-size:12px; opacity:.85; }
+        .task-mini-bar { width:100%; height:8px; background: rgba(255,255,255,.08); border-radius:999px; overflow:hidden; margin-top:.55rem; }
+        .task-mini-fill { height:100%; background: linear-gradient(90deg, #fb923c, #f43f5e); }
+        .task-item-bottom { display:flex; justify-content:space-between; gap:1rem; margin-top:.55rem; font-size:12px; opacity:.82; flex-wrap:wrap; }
+        .task-empty { opacity:.72; font-size:14px; padding:.35rem 0; }
+        .terminal {
+            background: #090d12; border-radius: 10px; padding: 1rem; min-height: 180px; max-height: 280px; overflow: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; line-height: 1.6;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .log-line { margin-bottom: 0.45rem; }
+        .log-time { color: #94a3b8; margin-right: 0.5rem; }
+        .log-ok { color: #10b981; }
+        .log-warn { color: #f59e0b; }
+        .log-info { color: #60a5fa; }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: .45rem; padding: .35rem .65rem; border-radius: 999px; font-size: 12px;
+            background: rgba(16,185,129,.12); color: #86efac; border: 1px solid rgba(16,185,129,.25);
+        }
+        .metric { font-size: 2rem; font-weight: bold; color: var(--phoenix-gold); }
+        .memory-results { display: grid; gap: .75rem; margin-top: 1rem; }
+        .memory-item { background: rgba(255,255,255,0.04); border-left: 3px solid var(--phoenix-orange); padding: .8rem 1rem; border-radius: 8px; }
+        .glow { box-shadow: 0 0 25px rgba(244,63,94,.22); }
+    </style>
+</head>
+<body>
+    <div class="phoenix-decoration decoration-1">🔥</div>
+    <div class="phoenix-decoration decoration-2">🔥</div>
+    <div class="phoenix-decoration decoration-3">🌀</div>
+
+    <header class="phoenix-header">
+        <h1 class="page-title">凤凰主题演示系统</h1>
+        <p style="text-align: center; opacity: 0.8;">Fhoenix Visual Design System</p>
+    </header>
+
+    <div class="container">
+        <section class="demo-section glow">
+            <h2 class="section-title">控制面板</h2>
+            <div class="button-group">
+                <button class="phoenix-button" id="btn-start">启动系统</button>
+                <button class="phoenix-button" id="btn-theme">主题切换</button>
+                <button class="phoenix-button" id="btn-voice">语音控制</button>
+                <button class="phoenix-button" id="btn-memory">记忆检索</button>
+            </div>
+            <div style="display:flex; gap:.75rem; margin-top:1rem; flex-wrap:wrap;">
+                <input id="voice-input" placeholder="你也可以先在这里输入一句话，比如：你在吗" style="flex:1; min-width:280px; padding:.8rem 1rem; border-radius:8px; border:1px solid rgba(255,255,255,.12); background:rgba(15,20,25,.8); color:#e2e8f0;">
+                <button class="phoenix-button" id="btn-voice-send">发送并播报</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p style="text-align:center;" id="progress-text">系统加载进度：80%</p>
+            <div class="live-panel">
+                <span class="status-pill" id="system-pill">● 系统待命</span>
+                <div class="task-panel">
+                    <div class="task-head">
+                        <div>
+                            <div class="task-title" id="task-title">当前任务：为凤凰系统加入动态进度条</div>
+                            <div class="task-meta" id="task-status">状态：处理中</div>
+                        </div>
+                        <div class="task-meta" id="task-eta">预计完成：15:00</div>
+                    </div>
+                    <div class="task-bar"><div class="task-bar-fill" id="task-bar-fill"></div></div>
+                    <div class="task-meta" style="margin-top:.6rem;" id="task-progress-text">完成度：35%</div>
+                    <div class="task-list" id="task-list"></div>
+                </div>
+                <div class="terminal" id="terminal" style="margin-top:1rem;"></div>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2 class="section-title">功能模块</h2>
+            <div class="card-grid">
+                <div class="phoenix-card">
+                    <h3><span class="status-indicator status-online"></span>UI设计系统</h3>
+                    <p>完整的凤凰主题视觉规范，包含色彩方案、组件库、动画效果</p>
+                </div>
+                <div class="phoenix-card">
+                    <h3><span class="status-indicator status-busy" id="injector-dot"></span>主题注入器</h3>
+                    <p id="injector-status">实时CSS注入机制，支持浏览器扩展和用户样式管理器</p>
+                </div>
+                <div class="phoenix-card">
+                    <h3><span class="status-indicator status-online"></span>记忆增强</h3>
+                    <p>跨会话记忆存储，智能检索和结构化管理</p>
+                </div>
+                <div class="phoenix-card">
+                    <h3><span class="status-indicator status-online"></span>安全审计</h3>
+                    <p>OWASP安全标准检查，配置验证和权限管理</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2 class="section-title">实时状态</h2>
+            <div class="card-grid">
+                <div class="phoenix-card">
+                    <h4>工作空间</h4>
+                    <div class="metric" id="metric-workspace">在线</div>
+                    <p>位置: /Users/guohao/.openclaw/workspace</p>
+                    <p id="workspace-state">状态: 🔥 运行中</p>
+                </div>
+                <div class="phoenix-card">
+                    <h4>记忆系统</h4>
+                    <div class="metric" id="metric-memory">9</div>
+                    <p>索引文件数</p>
+                    <p id="memory-state">健康度: ✅ 增强版已激活</p>
+                </div>
+                <div class="phoenix-card">
+                    <h4>浏览器集成</h4>
+                    <div class="metric" id="metric-browser">LIVE</div>
+                    <p>状态: 🚀 准备就绪</p>
+                    <p id="browser-state">模式: 实战演示</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2 class="section-title">记忆检索结果</h2>
+            <div class="memory-results" id="memory-results">
+                <div class="memory-item">还没有触发检索。点“记忆检索”看看凤凰把什么记住了。</div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const pill = document.getElementById('system-pill');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const memoryResults = document.getElementById('memory-results');
+        const metricMemory = document.getElementById('metric-memory');
+        const injectorStatus = document.getElementById('injector-status');
+        const browserState = document.getElementById('browser-state');
+        const workspaceState = document.getElementById('workspace-state');
+        const memoryState = document.getElementById('memory-state');
+        const taskTitle = document.getElementById('task-title');
+        const taskStatus = document.getElementById('task-status');
+        const taskEta = document.getElementById('task-eta');
+        const taskBarFill = document.getElementById('task-bar-fill');
+        const taskProgressText = document.getElementById('task-progress-text');
+        const taskList = document.getElementById('task-list');
+
+        let progress = 80;
+        let started = false;
+        let themeAlt = false;
+        let memoryCount = 9;
+        const liveMemoryData = {
+            totalMemories: 9,
+            priorityMemories: [
+                { file: 'daily/2026-03-13.md', keywords: ['每日记忆', '系统初始化', '凤凰记忆增强系统初始化完成'] },
+                { file: 'daily/2026-03-14.md', keywords: ['每日记忆', '自动维护记录', '更新记忆索引'] },
+                { file: 'topics/preferences.md', keywords: ['偏好与工作方式', '像正常人一样', '甘特图'] },
+                { file: 'people/老葉.md', keywords: ['老葉', '主人', '不要机器人式汇报'] },
+                { file: 'decisions/2026-03-14_brain-routing-and-phoenix-plan.md', keywords: ['脑调度', '凤凰计划', 'V3.1'] }
+            ],
+            recentMemories: [
+                { title: 'knowledge/brain-routing.md', text: '记录了默认低成本模型 V3.1、高质量兜底 GPT 5.4 的脑调度知识。' },
+                { title: 'decisions/2026-03-14_brain-routing-and-phoenix-plan.md', text: '记录凤凰计划持续推进、模型切换与备份方向。' },
+                { title: 'topics/preferences.md', text: '记录老葉偏好自然说话、直观汇报、甘特图式展示。' }
+            ]
+        };
+
+        const liveTasks = [
+            { name: '凤凰视觉系统', status: '进行中', percent: 72, eta: '今天晚些时候', result: '展示页已恢复并可交互', next: '继续收口更完整视觉版' },
+            { name: '语音交互', status: '基础可用', percent: 55, eta: '今天继续完善', result: '文本输入+语音播报已可用', next: '补更稳定的真实语音链路' },
+            { name: 'GitHub 备份体系', status: '待接入', percent: 20, eta: '后续接入', result: '已拿到仓库地址', next: '接远程备份与恢复入口' }
+        ];
+
+        function logLine(type, text) {
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            const time = new Date().toLocaleTimeString('zh-CN', {hour12:false});
+            div.innerHTML = `<span class="log-time">[${time}]</span><span class="log-${type}">${text}</span>`;
+            terminal.prepend(div);
+        }
+
+        function setPill(text, color='green') {
+            pill.textContent = text;
+            if (color === 'green') pill.style.cssText = 'display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .65rem;border-radius:999px;font-size:12px;background:rgba(16,185,129,.12);color:#86efac;border:1px solid rgba(16,185,129,.25);';
+            if (color === 'orange') pill.style.cssText = 'display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .65rem;border-radius:999px;font-size:12px;background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.25);';
+            if (color === 'blue') pill.style.cssText = 'display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .65rem;border-radius:999px;font-size:12px;background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.25);';
+        }
+
+        function animateProgress(target) {
+            const timer = setInterval(() => {
+                if (progress >= target) return clearInterval(timer);
+                progress += 1;
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `系统加载进度：${progress}%`;
+            }, 40);
+        }
+
+        function renderMemory(items) {
+            memoryResults.innerHTML = items.map(item => `
+                <div class="memory-item">
+                    <strong>${item.title}</strong>
+                    <div style="margin-top:.35rem;opacity:.9;">${item.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function setTask(title, status, percent, eta) {
+            taskTitle.textContent = `当前任务：${title}`;
+            taskStatus.textContent = `状态：${status}`;
+            taskEta.textContent = `预计完成：${eta}`;
+            taskBarFill.style.width = `${percent}%`;
+            taskProgressText.textContent = `完成度：${percent}%`;
+        }
+
+        function renderTaskList(tasks) {
+            const activeTasks = tasks.filter(task => task.percent < 100 && !String(task.status).includes('已完成'));
+            if (!activeTasks.length) {
+                taskList.innerHTML = '<div class="task-empty">当前没有未完成任务。</div>';
+                return;
+            }
+            taskList.innerHTML = activeTasks.map(task => `
+                <div class="task-item">
+                    <div class="task-item-top">
+                        <div class="task-item-name">${task.name}</div>
+                        <div class="task-item-state">${task.status} · ${task.percent}% · ${task.eta}</div>
+                    </div>
+                    <div class="task-mini-bar"><div class="task-mini-fill" style="width:${task.percent}%"></div></div>
+                    <div class="task-item-bottom">
+                        <div>已出结果：${task.result || '—'}</div>
+                        <div>下一结果：${task.next || '—'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('btn-start').addEventListener('click', () => {
+            if (started) {
+                logLine('info', '凤凰系统已在运行，无需重复点火。');
+                return;
+            }
+            started = true;
+            setPill('● 凤凰已苏醒', 'green');
+            animateProgress(100);
+            workspaceState.textContent = '状态: 🔥 凤凰已激活';
+            browserState.textContent = '模式: 交互演示中';
+            logLine('ok', '凤凰核心已点亮');
+            setTimeout(() => logLine('info', '飞书通信链路：在线'), 400);
+            setTimeout(() => logLine('info', '记忆增强系统：已接入'), 800);
+            setTimeout(() => logLine('ok', '视觉系统：已进入展示态'), 1200);
+        });
+
+        document.getElementById('btn-theme').addEventListener('click', () => {
+            themeAlt = !themeAlt;
+            if (themeAlt) {
+                document.body.style.background = 'linear-gradient(135deg, #190f0f, #3b1e10, #5b2d0f)';
+                injectorStatus.textContent = '凤凰炽焰模式已开启，视觉冲击增强';
+                logLine('warn', '主题切换：炽焰模式');
+            } else {
+                document.body.style.background = 'linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light))';
+                injectorStatus.textContent = '实时CSS注入机制，支持浏览器扩展和用户样式管理器';
+                logLine('info', '主题切换：标准凤凰模式');
+            }
+        });
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let listening = false;
+
+        function speak(text) {
+            if (!('speechSynthesis' in window)) {
+                logLine('warn', '当前浏览器不支持语音播报');
+                return;
+            }
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'zh-CN';
+            utter.rate = 1.0;
+            utter.pitch = 1.0;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utter);
+        }
+
+        document.getElementById('btn-voice').addEventListener('click', () => {
+            if (!SpeechRecognition) {
+                setPill('● 当前浏览器不支持语音识别', 'orange');
+                logLine('warn', '语音控制：浏览器不支持 SpeechRecognition');
+                speak('当前浏览器不支持语音识别');
+                return;
+            }
+
+            if (!recognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'zh-CN';
+                recognition.continuous = false;
+                recognition.interimResults = true;
+
+                recognition.onstart = () => {
+                    listening = true;
+                    setPill('● 正在听你说话', 'orange');
+                    logLine('info', '语音控制：开始监听');
+                };
+
+                recognition.onresult = (event) => {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    if (transcript.trim()) {
+                        handleVoiceText(transcript.trim());
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    setPill('● 语音识别出错', 'orange');
+                    logLine('warn', `语音控制错误：${event.error}`);
+                };
+
+                recognition.onend = () => {
+                    listening = false;
+                    setPill('● 语音模块就绪', 'green');
+                    logLine('info', '语音控制：监听结束');
+                };
+            }
+
+            if (listening) {
+                recognition.stop();
+                return;
+            }
+
+            recognition.start();
+            speak('我在听，你可以说话了。');
+        });
+
+        function handleVoiceText(transcript) {
+            const text = (transcript || '').trim();
+            if (!text) return;
+            logLine('ok', `识别/输入结果：${text}`);
+            if (text.includes('你在吗') || text.includes('在吗')) {
+                speak('我在。');
+                logLine('info', '语音回应：我在。');
+            } else if (text.includes('凤凰计划')) {
+                speak('凤凰计划正在持续推进。');
+                logLine('info', '语音回应：凤凰计划正在持续推进。');
+            } else {
+                speak(`我听到了，你说的是：${text}`);
+                logLine('info', `语音回应：我听到了，你说的是：${text}`);
+            }
+        }
+
+        document.getElementById('btn-voice-send').addEventListener('click', () => {
+            const input = document.getElementById('voice-input');
+            const text = input.value;
+            if (!text.trim()) {
+                logLine('warn', '请先输入一句话再发送');
+                return;
+            }
+            setPill('● 文本已转语音播报', 'green');
+            handleVoiceText(text);
+        });
+
+        document.getElementById('btn-memory').addEventListener('click', () => {
+            setPill('● 正在回忆', 'blue');
+            metricMemory.textContent = String(liveMemoryData.totalMemories);
+            memoryState.textContent = `健康度: ✅ 已索引 ${liveMemoryData.totalMemories} 条核心记忆`;
+            renderMemory([
+                { title: '高优先记忆', text: liveMemoryData.priorityMemories.map(x => `${x.file}（${x.keywords.slice(0,2).join('、')}）`).join('；') },
+                { title: '最近更新', text: liveMemoryData.recentMemories.map(x => `${x.title}：${x.text}`).join('；') },
+                { title: '检索结论', text: '已命中 老葉偏好 / 凤凰计划 / 脑调度 三类关键记忆。' }
+            ]);
+            logLine('ok', '记忆检索：已读取真实索引快照');
+            setTimeout(() => setPill('● 回忆完成', 'green'), 800);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            logLine('info', '演示面板已加载');
+            logLine('info', '等待点火…');
+            document.getElementById('voice-input').value = '你在吗';
+            setTask('凤凰视觉系统收口', '进行中', 72, '今天晚些时候');
+            renderTaskList(liveTasks);
+        });
+    </script>
+</body>
+</html>

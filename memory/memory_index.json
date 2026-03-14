@@ -1,0 +1,669 @@
+{
+  "lastUpdated": "2026-03-14T05:56:21.293Z",
+  "totalMemories": 9,
+  "categories": {
+    "daily": {
+      "count": 2,
+      "files": [
+        {
+          "name": "2026-03-13.md",
+          "size": 234,
+          "modified": "2026-03-13T13:28:28.806Z",
+          "keywords": [
+            "28",
+            "2026-03-13",
+            "每日记忆",
+            "系统初始化",
+            "2026-03-13T13",
+            "28.805Z",
+            "凤凰记忆增强系统初始化完成",
+            "初始版本",
+            "1.0.0",
+            "目标",
+            "为主人提供超级记忆能力",
+            "今日重要事项"
+          ],
+          "priority": "high"
+        },
+        {
+          "name": "2026-03-14.md",
+          "size": 232,
+          "modified": "2026-03-14T00:14:18.441Z",
+          "keywords": [
+            "14",
+            "2026-03-14",
+            "每日记忆",
+            "自动维护记录",
+            "2026-03-14T00",
+            "18.440Z",
+            "心跳维护自动创建",
+            "今日计划",
+            "记录重要对话和决策",
+            "整理学习到的知识",
+            "更新记忆索引",
+            "---"
+          ],
+          "priority": "high"
+        }
+      ]
+    },
+    "topics": {
+      "count": 4,
+      "files": [
+        {
+          "name": "memory_system.md",
+          "size": 34,
+          "modified": "2026-03-13T13:28:28.807Z",
+          "keywords": [
+            "memory",
+            "system",
+            "相关记忆"
+          ],
+          "priority": "medium"
+        },
+        {
+          "name": "openclaw.md",
+          "size": 29,
+          "modified": "2026-03-13T13:28:28.807Z",
+          "keywords": [
+            "openclaw",
+            "相关记忆"
+          ],
+          "priority": "medium"
+        },
+        {
+          "name": "preferences.md",
+          "size": 505,
+          "modified": "2026-03-14T05:52:53.089Z",
+          "keywords": [
+            "偏好与工作方式",
+            "对话风格",
+            "像正常人一样",
+            "不要机器人式汇报",
+            "汇报风格",
+            "优先视觉化",
+            "最好用甘特图",
+            "时间轴",
+            "并附完成百分比和预计完成时间",
+            "浏览器使用",
+            "尽量在用户当前已打开的",
+            "Chrome"
+          ],
+          "priority": "high"
+        },
+        {
+          "name": "skill_development.md",
+          "size": 38,
+          "modified": "2026-03-13T13:28:28.807Z",
+          "keywords": [
+            "skill",
+            "development",
+            "相关记忆"
+          ],
+          "priority": "medium"
+        }
+      ]
+    },
+    "people": {
+      "count": 1,
+      "files": [
+        {
+          "name": "老葉.md",
+          "size": 717,
+          "modified": "2026-03-14T05:52:41.501Z",
+          "keywords": [
+            "老葉",
+            "身份",
+            "Fhoenix",
+            "的主人",
+            "希望我像正常人一样说话",
+            "少机器人味",
+            "明确偏好",
+            "回复尽量简洁",
+            "自然",
+            "不要大量套话",
+            "汇报要直观",
+            "偏好甘特图"
+          ],
+          "priority": "high"
+        }
+      ]
+    },
+    "decisions": {
+      "count": 1,
+      "files": [
+        {
+          "name": "2026-03-14_brain-routing-and-phoenix-plan.md",
+          "size": 552,
+          "modified": "2026-03-14T05:53:03.552Z",
+          "keywords": [
+            "2026-03-14",
+            "脑调度与凤凰计划决策",
+            "关键决策",
+            "1.",
+            "默认主模型切换为",
+            "V3.1",
+            "以降低成本",
+            "2.",
+            "GPT",
+            "5.4",
+            "作为高质量兜底模型",
+            "用于关键判断和重要回复"
+          ],
+          "priority": "high"
+        }
+      ]
+    },
+    "knowledge": {
+      "count": 1,
+      "files": [
+        {
+          "name": "brain-routing.md",
+          "size": 407,
+          "modified": "2026-03-14T05:56:10.375Z",
+          "keywords": [
+            "GPT",
+            "5.4",
+            "脑调度知识",
+            "默认策略",
+            "默认低成本模型",
+            "V3.1",
+            "高质量兜底模型",
+            "日常推进优先低成本模型",
+            "关键判断",
+            "重要回复",
+            "复杂规划可升级",
+            "切换规则"
+          ],
+          "priority": "high"
+        }
+      ]
+    }
+  },
+  "stats": {
+    "daily": 2,
+    "topics": 4,
+    "people": 1,
+    "decisions": 1,
+    "knowledge": 1
+  },
+  "recentMemories": [
+    {
+      "category": "knowledge",
+      "name": "brain-routing.md",
+      "modified": "2026-03-14T05:56:10.375Z",
+      "size": 407,
+      "keywords": [
+        "GPT",
+        "5.4",
+        "脑调度知识",
+        "默认策略",
+        "默认低成本模型",
+        "V3.1",
+        "高质量兜底模型",
+        "日常推进优先低成本模型",
+        "关键判断",
+        "重要回复",
+        "复杂规划可升级",
+        "切换规则"
+      ],
+      "priority": "high"
+    },
+    {
+      "category": "decisions",
+      "name": "2026-03-14_brain-routing-and-phoenix-plan.md",
+      "modified": "2026-03-14T05:53:03.552Z",
+      "size": 552,
+      "keywords": [
+        "2026-03-14",
+        "脑调度与凤凰计划决策",
+        "关键决策",
+        "1.",
+        "默认主模型切换为",
+        "V3.1",
+        "以降低成本",
+        "2.",
+        "GPT",
+        "5.4",
+        "作为高质量兜底模型",
+        "用于关键判断和重要回复"
+      ],
+      "priority": "high"
+    },
+    {
+      "category": "topics",
+      "name": "preferences.md",
+      "modified": "2026-03-14T05:52:53.089Z",
+      "size": 505,
+      "keywords": [
+        "偏好与工作方式",
+        "对话风格",
+        "像正常人一样",
+        "不要机器人式汇报",
+        "汇报风格",
+        "优先视觉化",
+        "最好用甘特图",
+        "时间轴",
+        "并附完成百分比和预计完成时间",
+        "浏览器使用",
+        "尽量在用户当前已打开的",
+        "Chrome"
+      ],
+      "priority": "high"
+    },
+    {
+      "category": "people",
+      "name": "老葉.md",
+      "modified": "2026-03-14T05:52:41.501Z",
+      "size": 717,
+      "keywords": [
+        "老葉",
+        "身份",
+        "Fhoenix",
+        "的主人",
+        "希望我像正常人一样说话",
+        "少机器人味",
+        "明确偏好",
+        "回复尽量简洁",
+        "自然",
+        "不要大量套话",
+        "汇报要直观",
+        "偏好甘特图"
+      ],
+      "priority": "high"
+    },
+    {
+      "category": "daily",
+      "name": "2026-03-14.md",
+      "modified": "2026-03-14T00:14:18.441Z",
+      "size": 232,
+      "keywords": [
+        "14",
+        "2026-03-14",
+        "每日记忆",
+        "自动维护记录",
+        "2026-03-14T00",
+        "18.440Z",
+        "心跳维护自动创建",
+        "今日计划",
+        "记录重要对话和决策",
+        "整理学习到的知识",
+        "更新记忆索引",
+        "---"
+      ],
+      "priority": "high"
+    },
+    {
+      "category": "topics",
+      "name": "memory_system.md",
+      "modified": "2026-03-13T13:28:28.807Z",
+      "size": 34,
+      "keywords": [
+        "memory",
+        "system",
+        "相关记忆"
+      ],
+      "priority": "medium"
+    },
+    {
+      "category": "topics",
+      "name": "openclaw.md",
+      "modified": "2026-03-13T13:28:28.807Z",
+      "size": 29,
+      "keywords": [
+        "openclaw",
+        "相关记忆"
+      ],
+      "priority": "medium"
+    },
+    {
+      "category": "topics",
+      "name": "skill_development.md",
+      "modified": "2026-03-13T13:28:28.807Z",
+      "size": 38,
+      "keywords": [
+        "skill",
+        "development",
+        "相关记忆"
+      ],
+      "priority": "medium"
+    },
+    {
+      "category": "daily",
+      "name": "2026-03-13.md",
+      "modified": "2026-03-13T13:28:28.806Z",
+      "size": 234,
+      "keywords": [
+        "28",
+        "2026-03-13",
+        "每日记忆",
+        "系统初始化",
+        "2026-03-13T13",
+        "28.805Z",
+        "凤凰记忆增强系统初始化完成",
+        "初始版本",
+        "1.0.0",
+        "目标",
+        "为主人提供超级记忆能力",
+        "今日重要事项"
+      ],
+      "priority": "high"
+    }
+  ],
+  "analytics": {
+    "weeklyGrowth": 9,
+    "avgFileSize": 305.3333333333333,
+    "lastUpdated": "2026-03-14T05:56:21.293Z",
+    "totalLinks": 1,
+    "highPriorityCount": 6
+  },
+  "lastHeartbeat": "2026-03-14T08:53:26.148Z",
+  "heartbeatCount": 20,
+  "searchTerms": {
+    "14": [
+      "daily/2026-03-14.md"
+    ],
+    "28": [
+      "daily/2026-03-13.md"
+    ],
+    "2026-03-13": [
+      "daily/2026-03-13.md"
+    ],
+    "每日记忆": [
+      "daily/2026-03-13.md",
+      "daily/2026-03-14.md"
+    ],
+    "系统初始化": [
+      "daily/2026-03-13.md"
+    ],
+    "2026-03-13T13": [
+      "daily/2026-03-13.md"
+    ],
+    "28.805Z": [
+      "daily/2026-03-13.md"
+    ],
+    "凤凰记忆增强系统初始化完成": [
+      "daily/2026-03-13.md"
+    ],
+    "初始版本": [
+      "daily/2026-03-13.md"
+    ],
+    "1.0.0": [
+      "daily/2026-03-13.md"
+    ],
+    "目标": [
+      "daily/2026-03-13.md"
+    ],
+    "为主人提供超级记忆能力": [
+      "daily/2026-03-13.md"
+    ],
+    "今日重要事项": [
+      "daily/2026-03-13.md"
+    ],
+    "2026-03-14": [
+      "daily/2026-03-14.md",
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "自动维护记录": [
+      "daily/2026-03-14.md"
+    ],
+    "2026-03-14T00": [
+      "daily/2026-03-14.md"
+    ],
+    "18.440Z": [
+      "daily/2026-03-14.md"
+    ],
+    "心跳维护自动创建": [
+      "daily/2026-03-14.md"
+    ],
+    "今日计划": [
+      "daily/2026-03-14.md"
+    ],
+    "记录重要对话和决策": [
+      "daily/2026-03-14.md"
+    ],
+    "整理学习到的知识": [
+      "daily/2026-03-14.md"
+    ],
+    "更新记忆索引": [
+      "daily/2026-03-14.md"
+    ],
+    "---": [
+      "daily/2026-03-14.md"
+    ],
+    "memory": [
+      "topics/memory_system.md"
+    ],
+    "system": [
+      "topics/memory_system.md"
+    ],
+    "相关记忆": [
+      "topics/memory_system.md",
+      "topics/openclaw.md",
+      "topics/skill_development.md"
+    ],
+    "openclaw": [
+      "topics/openclaw.md"
+    ],
+    "偏好与工作方式": [
+      "topics/preferences.md"
+    ],
+    "对话风格": [
+      "topics/preferences.md"
+    ],
+    "像正常人一样": [
+      "topics/preferences.md"
+    ],
+    "不要机器人式汇报": [
+      "topics/preferences.md"
+    ],
+    "汇报风格": [
+      "topics/preferences.md"
+    ],
+    "优先视觉化": [
+      "topics/preferences.md"
+    ],
+    "最好用甘特图": [
+      "topics/preferences.md"
+    ],
+    "时间轴": [
+      "topics/preferences.md"
+    ],
+    "并附完成百分比和预计完成时间": [
+      "topics/preferences.md"
+    ],
+    "浏览器使用": [
+      "topics/preferences.md"
+    ],
+    "尽量在用户当前已打开的": [
+      "topics/preferences.md"
+    ],
+    "Chrome": [
+      "topics/preferences.md"
+    ],
+    "skill": [
+      "topics/skill_development.md"
+    ],
+    "development": [
+      "topics/skill_development.md"
+    ],
+    "老葉": [
+      "people/老葉.md"
+    ],
+    "身份": [
+      "people/老葉.md"
+    ],
+    "Fhoenix": [
+      "people/老葉.md"
+    ],
+    "的主人": [
+      "people/老葉.md"
+    ],
+    "希望我像正常人一样说话": [
+      "people/老葉.md"
+    ],
+    "少机器人味": [
+      "people/老葉.md"
+    ],
+    "明确偏好": [
+      "people/老葉.md"
+    ],
+    "回复尽量简洁": [
+      "people/老葉.md"
+    ],
+    "自然": [
+      "people/老葉.md"
+    ],
+    "不要大量套话": [
+      "people/老葉.md"
+    ],
+    "汇报要直观": [
+      "people/老葉.md"
+    ],
+    "偏好甘特图": [
+      "people/老葉.md"
+    ],
+    "脑调度与凤凰计划决策": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "关键决策": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "1.": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "默认主模型切换为": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "V3.1": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md",
+      "knowledge/brain-routing.md"
+    ],
+    "以降低成本": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "2.": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "GPT": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md",
+      "knowledge/brain-routing.md"
+    ],
+    "5.4": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md",
+      "knowledge/brain-routing.md"
+    ],
+    "作为高质量兜底模型": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "用于关键判断和重要回复": [
+      "decisions/2026-03-14_brain-routing-and-phoenix-plan.md"
+    ],
+    "脑调度知识": [
+      "knowledge/brain-routing.md"
+    ],
+    "默认策略": [
+      "knowledge/brain-routing.md"
+    ],
+    "默认低成本模型": [
+      "knowledge/brain-routing.md"
+    ],
+    "高质量兜底模型": [
+      "knowledge/brain-routing.md"
+    ],
+    "日常推进优先低成本模型": [
+      "knowledge/brain-routing.md"
+    ],
+    "关键判断": [
+      "knowledge/brain-routing.md"
+    ],
+    "重要回复": [
+      "knowledge/brain-routing.md"
+    ],
+    "复杂规划可升级": [
+      "knowledge/brain-routing.md"
+    ],
+    "切换规则": [
+      "knowledge/brain-routing.md"
+    ]
+  },
+  "links": [
+    {
+      "from": "decisions/2026-03-14_brain-routing-and-phoenix-plan.md",
+      "to": "knowledge/brain-routing.md",
+      "shared": [
+        "V3.1",
+        "GPT",
+        "5.4"
+      ]
+    }
+  ],
+  "priorityMemories": [
+    {
+      "file": "daily/2026-03-13.md",
+      "modified": "2026-03-13T13:28:28.806Z",
+      "keywords": [
+        "28",
+        "2026-03-13",
+        "每日记忆",
+        "系统初始化",
+        "2026-03-13T13"
+      ]
+    },
+    {
+      "file": "daily/2026-03-14.md",
+      "modified": "2026-03-14T00:14:18.441Z",
+      "keywords": [
+        "14",
+        "2026-03-14",
+        "每日记忆",
+        "自动维护记录",
+        "2026-03-14T00"
+      ]
+    },
+    {
+      "file": "topics/preferences.md",
+      "modified": "2026-03-14T05:52:53.089Z",
+      "keywords": [
+        "偏好与工作方式",
+        "对话风格",
+        "像正常人一样",
+        "不要机器人式汇报",
+        "汇报风格"
+      ]
+    },
+    {
+      "file": "people/老葉.md",
+      "modified": "2026-03-14T05:52:41.501Z",
+      "keywords": [
+        "老葉",
+        "身份",
+        "Fhoenix",
+        "的主人",
+        "希望我像正常人一样说话"
+      ]
+    },
+    {
+      "file": "decisions/2026-03-14_brain-routing-and-phoenix-plan.md",
+      "modified": "2026-03-14T05:53:03.552Z",
+      "keywords": [
+        "2026-03-14",
+        "脑调度与凤凰计划决策",
+        "关键决策",
+        "1.",
+        "默认主模型切换为"
+      ]
+    },
+    {
+      "file": "knowledge/brain-routing.md",
+      "modified": "2026-03-14T05:56:10.375Z",
+      "keywords": [
+        "GPT",
+        "5.4",
+        "脑调度知识",
+        "默认策略",
+        "默认低成本模型"
+      ]
+    }
+  ]
+}

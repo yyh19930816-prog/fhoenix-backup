@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "publishedAt": "2026-03-13T13:22:00.000Z",
+  "slug": "phoenix-memory-enhancer",
+  "name": "phoenix-memory-enhancer",
+  "description": "凤凰记忆增强系统 - 为Fhoenix提供超级强大的长期记忆、智能检索和记忆优化能力",
+  "tags": ["memory", "phoenix", "enhancer", "longterm", "retrieval"],
+  "author": "Fhoenix",
+  "license": "MIT",
+  "homepage": "",
+  "repository": "",
+  "skillKey": "phoenix-memory-enhancer",
+  "metadata": {
+    "openclaw": {
+      "emoji": "🧠",
+      "requires": {
+        "env": ["OPENAI_API_KEY"],
+        "anyBins": ["node", "python3"]
+      },
+      "primaryEnv": "OPENAI_API_KEY"
+    }
+  }
+}

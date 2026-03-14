@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰实时任务监控</title>
+    <style>
+        :root { --phoenix-red: #f43f5e; --phoenix-orange: #fb923c; --phoenix-gold: #fbbf24; }
+        body { background: #0f1419; color: #e2e8f0; font-family: Arial, sans-serif; margin: 0; padding: 2rem; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .title { font-size: 2.5rem; font-weight: bold; background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { opacity: 0.8; }
+        
+        .task-panel { max-width: 800px; margin: 0 auto; margin-bottom: 2rem; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .task-title { font-size: 1.5rem; color: var(--phoenix-gold); }
+        .status-indicator { padding: .5rem 1rem; border-radius: 999px; background: rgba(244,63,94,0.2); font-size: .9rem; }
+        
+        .task-grid { display: grid; gap: 1rem; }
+        .task-card { background: rgba(30,41,59,0.7); border: 1px solid rgba(244,63,94,0.3); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .task-card:hover { border-color: rgba(244,63,94,0.6); }
+        .task-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .task-name { font-weight: bold; font-size: 1.2rem; }
+        .task-meta { font-size: .9rem; opacity: .85; }
+        .task-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden; margin: .5rem 0; }
+        .task-fill { height: 100%; background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange)); transition: width 0.5s ease; }
+        .task-bottom { display: flex; justify-content: space-between; font-size: .85rem; opacity: .8; margin-top: .5rem; }
+        
+        .terminal { background: #090d12; border-radius: 10px; padding: 1rem; margin-top: 2rem; max-height: 300px; overflow: auto; font-family: monospace; font-size: .9rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="title">凤凰实时任务监控系统</h1>
+        <p class="subtitle">Fhoenix Real-Time Task Monitor - 所有任务并行推进</p>
+    </header>
+    
+    <main>
+        <section class="task-panel">
+            <div class="task-header">
+                <h2 class="task-title">并行任务进度</h2>
+                <div class="status-indicator" id="status-indicator">准备启动...</div>
+            </div>
+            
+            <div class="task-grid" id="task-grid">
+                <div class="task-card">
+                    <div class="task-top">
+                        <div class="task-name">凤凰视觉系统</div>
+                        <div class="task-meta"><span id="task1-progress">0%</span> · 进行中</div>
+                    </div>
+                    <div class="task-bar"><div class="task-fill" id="task1-bar" style="width:0%"></div></div>
+                    <div class="task-bottom">
+                        <div>结果: <span id="task1-result">等待启动</span></div>
+                        <div>下一项: <span id="task1-next">界面初始化</span></div>
+                    </div>
+                </div>
+                
+                <div class="task-card">
+                    <div class="task-top">
+                        <div class="task-name">语音交互模块</div>
+                        <div class="task-meta"><span id="task2-progress">0%</span> · 进行中</div>
+                    </div>
+                    <div class="task-bar"><div class="task-fill" id="task2-bar" style="width:0%"></div></div>
+                    <div class="task-bottom">
+                        <div>结果: <span id="task2-result">等待启动</span></div>
+                        <div>下一项: <span id="task2-next">麦克风检测</span></div>
+                    </div>
+                </div>
+                
+                <div class="task-card">
+                    <div class="task-top">
+                        <div class=" task-name">记忆增强系统</div>
+                        <div class="task-meta"><span id="task3-progress">0%</span> · 进行中</div>
+                    </div>
+                    <div class="task-bar"><div class="task-fill" id="task3-bar" style="width:0%"></div></div>
+                    <div class="task-bottom">
+                        <div>结果: <span id="task3-result">等待启动</span></div>
+                        <div>下一项: <span id="task3-next">索引更新</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="terminal" id="terminal">
+            <div>[16:18] 系统加载完成，准备启动实时监控...</div>
+        </section>
+    </main>
+
+    <script>
+        const statusIndicator = document.getElementById('status-indicator');
+        const terminal = document.getElementById('terminal');
+        let syncInterval;
+        
+        // 更新任务显示
+        function updateTaskDisplay(tasks) {
+            tasks.forEach((task, index) => {
+                const taskNum = index + 1;
+                document.getElementById(`task${taskNum}-progress`).textContent = `${task.percent}%`;
+                document.getElementById(`task${taskNum}-bar`).style.width = `${task.percent}%`;
+                document.getElementById(`task${taskNum}-result`).textContent = task.result || '—';
+                document.getElementById(`task${taskNum}-next`).textContent = task.next || '—';
+            });
+        }
+        
+        // 添加终端日志
+        function log(message) {
+            const time = new Date().toLocaleTimeString('zh-CN', {hour12:false});
+            const div = document.createElement('div');
+            div.innerHTML = `[${time}] ${message}`;
+            terminal.prepend(div);
+            terminal.scrollTop = 0;
+        }
+        
+        // 获取任务数据
+        async function fetchTasks() {
+            try {
+                const response = await fetch('http://127.0.0.1:8766/tasks');
+                if (!response.ok) throw new Error('服务响应失败');
+                const data = await response.json();
+                return data.tasks;
+            } catch (error) {
+                log(`服务连接失败: ${error.message}`);
+                // 返回默认演示数据
+                return [
+                    { percent: Math.floor(Math.random() * 30), result: '演示数据', next: '连接真实服务' },
+                    { percent: Math.floor(Math.random() * 30), result: '演示数据', next: '连接真实服务' },
+                    { percent: Math.floor(Math.random() * 30), result: '演示数据', next: '连接真实服务' }
+                ];
+            }
+        }
+        
+        // 启动实时同步
+        async function startRealTimeSync() {
+            statusIndicator.textContent = '实时同步中';
+            statusIndicator.style.background = 'rgba(16,185,129,0.2)';
+            log('实时任务监控已启动 - 所有任务并行推进中...');
+            
+            try {
+                // 先获取一次
+                const tasks = await fetchTasks();
+                updateTaskDisplay(tasks);
+                log(`已加载 ${tasks.length} 个并行任务`);
+                
+                // 每2秒同步一次
+                syncInterval = setInterval(async () => {
+                    const newTasks = await fetchTasks();
+                    updateTaskDisplay(newTasks);
+                    
+                    // 显示进度变化
+                    newTasks.forEach((task, i) => {
+                        const oldPercent = parseInt(document.getElementById(`task${i+1}-progress`).textContent) || 0;
+                        if (task.percent !== oldPercent) {
+                            log(`任务${i+1}: ${oldPercent}% → ${task.percent}% (并行推进)`);
+                        }
+                    });
+                }, 2000);
+                
+            } catch (error) {
+                log(`启动失败: ${error.message}`);
+                statusIndicator.textContent = '连接失败';
+                statusIndicator.style.background = 'rgba(244,63,94,0.2)';
+            }
+        }
+        
+        // 页面加载自动启动
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                startRealTimeSync();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凤凰主题演示 - Fhoenix UI System</title>
+    <style>
+        :root {
+            --phoenix-red: #f43f5e;
+            --phoenix-orange: #fb923c;
+            --phoenix-gold: #fbbf24;
+            --phoenix-bg-dark: #0f1419;
+            --phoenix-bg-light: #1e293b;
+            --phoenix-text: #e2e8f0;
+            --phoenix-accent: #3b82f6;
+            --phoenix-green: #10b981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+            color: var(--phoenix-text);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .phoenix-header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--phoenix-red);
+            position: relative;
+            overflow: hidden;
+        }
+        .phoenix-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--phoenix-orange), var(--phoenix-red), var(--phoenix-gold), transparent, transparent);
+           animation: rotate 4s linear infinite;
+            z-index: -1;
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        .page-title {
+            font-size: 2.5rem; font-weight: bold;
+            background: linear-gradient(45deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center; margin-bottom: 0.5rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .demo-section {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            box-shadow: 0 8px 32px rgba(244, 63, 94, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .section-title {
+            font-size: 1.5rem; color: var(--phoenix-gold); margin-bottom: 1rem; position: relative; padding-left: 1rem;
+        }
+        .section-title::before { content: '🔥'; position: absolute; left: -0.5rem; transform: rotate(-15deg); }
+        
+        /* 任务面板样式 */
+        .live-panel {
+            background: rgba(10, 15, 24, 0.85); border: 1px solid rgba(251,191,36,0.3); border-radius: 12px; padding: 1rem; margin-top: 1rem;
+        }
+        .task-panel {
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(244,63,94,0.22);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .task-head { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:.75rem; }
+        .task-title { font-weight:bold; color: var(--phoenix-gold); }
+        .task-meta { opacity:.85; font-size:14px; }
+        .task-bar { width:100%; height:12px; background: rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; }
+        .task-bar-fill { height:100%; width:35%; background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold)); transition: width .35s ease; }
+        .task-list { display:grid; gap:.85rem; margin-top:1rem; }
+        .task-item { background: rgba(15,20,25,.65); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:.9rem; transition: all 0.3s ease; }
+        .task-item:hover { border-color: rgba(244,63,94,0.4); }
+        .task-item-top { display:flex; justify-content:space-between; gap:1rem; align-items:center; }
+        .task-item-name { font-weight:600; }
+        .task-item-state { font-size:12px; opacity:.85; }
+        .task-mini-bar { width:100%; height:8px; background: rgba(255,255,255,.08); border-radius:999px; overflow:hidden; margin-top:.55rem; }
+        .task-mini-fill { height:100%; background: linear-gradient(90deg, #fb923c, #f43f5e); transition: width 0.5s ease; }
+        .task-item-bottom { display:flex; justify-content:space-between; gap:1rem; margin-top:.55rem; font-size:12px; opacity:.82; flex-wrap:wrap; }
+        .task-empty { opacity:.72; font-size:14px; padding:.35rem 0; }
+        
+        /* 其他样式保持不变 */
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .phoenix-button {
+            background: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange));
+            border: none; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin: 1rem 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--phoenix-red), var(--phoenix-orange)); border-radius: 3px; width: 80%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .terminal {
+            background: #090d12; border-radius: 10px; padding: 1rem; min-height: 180px; max-height: 280px; overflow: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; line-height: 1.6;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+    </style>
+</head>
+<body>
+    <header class="phoenix-header">
+        <h1 class="page-title">凤凰主题演示系统 (实时动态版)</h1>
+        <p style="text-align: center; opacity: 0.8;">Fhoenix Real-Time Task Monitor</p>
+    </header>
+
+    <div class="container">
+        <section class="demo-section">
+            <h2 class="section-title">控制面板</h2>
+            <div class="button-group">
+                <button class="phoenix-button" id="btn-start">启动系统</button>
+            </div>
+            
+            <div class="live-panel">
+                <div class="task-panel">
+                    <div class="task-head">
+                        <div>
+                            <div class="task-title" id="task-title">凤凰任务监控系统</div>
+                            <div class="task-meta" id="task-status">状态：正在连接实时服务</div>
+                        </div>
+                        <div class="task-meta" id="task-eta">更新时间：<span id="last-update">-</span></div>
+                    </div>
+                    
+                    <!-- 实时任务列表 -->
+                    <div class="task-list" id="task-list">
+                        <div class="task-empty">正在加载任务数据...</div>
+                    </div>
+                </div>
+                
+                <div class="terminal" id="terminal" style="margin-top:1rem;"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const taskList = document.getElementById('task-list');
+        const taskStatus = document.getElementById('task-status');
+        const terminal = document.getElementById('terminal');
+        const lastUpdateElem = document.getElementById('last-update');
+        
+        // 日志功能
+        function logLine(type, text) {
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            const time = new Date().toLocaleTimeString('zh-CN', {hour12:false});
+            div.innerHTML = `<span class="log-time">[${time}]</span><span class="log-${type}">${text}</span>`;
+            terminal.prepend(div);
+        }
+        
+        // 静态CSS类
+        const cssMapping = {
+            'ok': 'color: #10b981',
+            'warn': 'color: #f59e0b',
+            'info': 'color: #60a5fa'
+        };
+        
+        // 渲染任务列表
+        function renderTaskList(tasks) {
+            const activeTasks = tasks.filter(task => task.percent < 100 && !String(task.status).includes('已完成'));
+            
+            if (!activeTasks.length) {
+                taskList.innerHTML = '<div class="task-empty">当前所有任务已完成！</div>';
+                return;
+            }
+            
+            taskList.innerHTML = activeTasks.map(task => `
+                <div class="task-item">
+                    <div class="task-item-top">
+                        <div class="task-item-name">${task.name}</div>
+                        <div class="task-item-state">${task.status} · ${task.percent}% · ${task.eta}</div>
+                    </div>
+                    <div class="task-mini-bar"><div class="task-mini-fill" style="width:${task.percent}%"></div></div>
+                    <div class="task-item-bottom">
+                        <div>已出结果：${task.result || '—'}</div>
+                        <div>下一结果：${task.next || '—'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 从服务获取任务
+        async function fetchTasksFromServer() {
+            try {
+                const response = await fetch('http://127.0.0.1:8766/tasks');
+                if (!response.ok) throw new Error('服务响应失败');
+                const data = await response.json();
+                
+                // 更新最后更新时间
+                lastUpdateElem.textContent = new Date(data.lastUpdate).toLocaleTimeString('zh-CN');
+                
+                // 渲染任务列表
+                renderTaskList(data.tasks);
+                
+                // 更新整体状态
+                const activeCount = data.tasks.filter(t => t.percent < 100).length;
+                const totalCount = data.tasks.length;
+                taskStatus.textContent = `状态：实时同步中 (${activeCount}/${totalCount} 进行中)`;
+                
+                return data.tasks;
+            } catch (error) {
+                console.log('连接任务服务失败:', error);
+                taskStatus.textContent = '状态：服务连接失败，使用演示数据';
+                
+                // 显示演示数据
+                const demoTasks = [
+                    { name: '凤凰视觉系统', status: '准备中', percent: 0, eta: '10分钟后', result: '等待启动', next: '初始化界面' },
+                    { name: '语音交互', status: '准备中', percent: 0, eta: '15分钟后', result: '等待启动', next: '麦克风检测' },
+                    { name: '记忆增强', status: '准备中', percent: 0, eta: '20分钟后', result: '等待启动', next: '索引更新' }
+                ];
+                renderTaskList(demoTasks);
+                return demoTasks;
+            }
+        }
+        
+        // 启动实时同步
+        let syncInterval;
+        function startTaskSync() {
+            // 先获取一次
+            fetchTasksFromServer().then(tasks => {
+                logLine('info', `任务监控启动，共加载 ${tasks.length} 个任务`);
+            });
+            
+            // 每5秒同步一次
+            syncInterval = setInterval(() => {
+                fetchTasksFromServer();
+            }, 5000);
+        }
+        
+        // 停止同步
+        function stopTaskSync() {
+            if (syncInterval) {
+                clearInterval(syncInterval);
+                syncInterval = null;
+            }
+        }
+        
+        // 启动按钮
+        document.getElementById('btn-start').addEventListener('click', () => {
+            startTaskSync();
+            logLine('ok', '凤凰实时任务监控系统已启动');
+        });
+        
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', () => {
+            logLine('info', '动态任务面板已加载');
+            logLine('info', '点击"启动系统"开始实时监控');
+        });
+    </script>
+</body>
+</html>

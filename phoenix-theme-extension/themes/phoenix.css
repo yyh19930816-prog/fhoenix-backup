@@ -1,0 +1,207 @@
+/* 凤凰主题核心样式 - Fhoenix Theme Core CSS */
+
+/* CSS变量定义 */
+:root {
+  /* 凤凰色彩体系 */
+  --phoenix-red: #f43f5e;
+  --phoenix-orange: #fb923c;
+  --phoenix-gold: #fbbf24;
+  --phoenix-bg-dark: #0f1419;
+  --phoenix-bg-light: #1e293b;
+  --phoenix-text: #e2e8f0;
+  --phoenix-accent: #3b82f6;
+  
+  /* 渐变效果 */
+  --gradient-phoenix: linear-gradient(135deg, var(--phoenix-red), var(--phoenix-orange), var(--phoenix-gold));
+  --gradient-bg: linear-gradient(135deg, var(--phoenix-bg-dark), var(--phoenix-bg-light));
+}
+
+/* 主体样式覆盖 - 性能优化版 */
+body {
+  background: var(--gradient-bg) !important;
+  color: var(--phoenix-text) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  transition: all 0.3s ease !important;
+  /* GPU加速优化 */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--phoenix-gold) !important;
+  position: relative !important;
+}
+
+h1::before {
+  content: '🔥 ' !important;
+}
+
+h2::before {
+  content: '✨ ' !important;
+}
+
+/* 按钮样式改造 */
+button, .btn, [role="button"] {
+  background: var(--gradient-phoenix) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+button:hover, .btn:hover, [role="button"]:hover {
+  transform: translateY(-2px) translateZ(0) !important;
+  box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3) !important;
+  /* GPU加速hover效果 */
+  will-change: transform, box-shadow;
+}
+
+button::before, .btn::before, [role="button"]::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+  transition: left 0.5s ease !important;
+}
+
+button:hover::before, .btn:hover::before, [role="button"]:hover::before {
+  left: 100% !important;
+}
+
+/* 输入框样式 */
+input, textarea, select {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid var(--phoenix-red) !important;
+  color: var(--phoenix-text) !important;
+  border-radius: 4px !important;
+ padding: 8px 12px !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: var(--phoenix-gold) !important;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2) !important;
+}
+
+/* 链接样式 */
+a {
+  color: var(--phoenix-accent) !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+}
+
+a:hover {
+  color: var(--phoenix-gold) !important;
+  text-decoration: underline !important;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-phoenix) !important;
+  border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--phoenix-orange), var(--phoenix-red)) !important;
+}
+
+/* 卡片/容器样式 */
+.card, .panel, .box, [class*="card"], [class*="panel"], [class*="box"] {
+  background: rgba(15, 20, 25, 0.6) !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.card:hover, .panel:hover, .box:hover, [class*="card"]:hover, [class*="panel"]:hover, [class*="box"]:hover {
+  border-color: var(--phoenix-accent) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* 导航栏样式 */
+nav, .nav, .navbar, [role="navigation"] {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  border-bottom: 2px solid var(--phoenix-red) !important;
+}
+
+/* 表格样式 */
+table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+th {
+  background: rgba(244, 63, 94, 0.2) !important;
+  color: var(--phoenix-gold) !important;
+}
+
+td, th {
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+  padding: 8px !important;
+}
+
+tr:nth-child(even) {
+  background: rgba(30, 41, 59, 0.3) !important;
+}
+
+/* 状态指示器 */
+.status-online, .success, .positive {
+  color: #10b981 !important;
+}
+
+.status-warning, .warning {
+  color: var(--phoenix-orange) !important;
+}
+
+.status-error, .error, .negative {
+  color: var(--phoenix-red) !important;
+}
+
+/* 动画效果 */
+@keyframes phoenix-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(244, 63, 94, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(244, 63, 94, 0.8); }
+}
+
+@keyframes phoenix-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.glow-effect {
+  animation: phoenix-glow 2s ease-in-out infinite !important;
+}
+
+.float-effect {
+  animation: phoenix-float 3s ease-in-out infinite !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px !important;
+  }
+  
+  button, .btn, [role="button"] {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+  }
+}

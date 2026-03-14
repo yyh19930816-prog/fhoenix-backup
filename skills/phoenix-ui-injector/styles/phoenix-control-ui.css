@@ -1,0 +1,270 @@
+/* 凤凰主题 - OpenClaw控制UI定制 */
+/* 基于凤凰设计系统 v1.0 */
+
+@import url('./phoenix-variables.css');
+
+/* ===== 全局主题覆盖 ===== */
+[data-theme="dark"] {
+  /* 强制应用凤凰暗色主题 */
+  --default-bg-primary: var(--phoenix-bg-primary);
+  --default-bg-secondary: var(--phoenix-bg-secondary);
+  --default-text-primary: var(--phoenix-text-primary);
+  --default-text-secondary: var(--phoenix-text-secondary);
+  
+  /* 主题切换按钮 */
+  [ref*="color-mode"] {
+    background: var(--phoenix-primary-gradient) !important;
+    border-color: var(--phoenix-accent) !important;
+  }
+}
+
+/* ===== 顶部导航栏 ===== */
+banner[ref="e4"] {
+  background: var(--phoenix-secondary-gradient) !important;
+  border-bottom: 2px solid var(--phoenix-primary) !important;
+}
+
+/* Logo区域 - 添加凤凰图标 */
+img[ref="e31"] {
+  /* 这里可以替换为凤凰徽标 */
+  filter: hue-rotate(160deg) brightness(1.2) !important;
+}
+
+generic[ref="e32"] {
+  /* OpenClaw文字标题 */
+  background: var(--phoenix-primary-gradient) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: var(--phoenix-font-weight-bold) !important;
+}
+
+/* ===== 侧边导航栏 ===== */
+navigation[ref="e36"] {
+  background: var(--phoenix-bg-secondary) !important;
+  border-right: 1px solid var(--phoenix-primary-light) !important;
+}
+
+/* 导航项悬停效果 */
+link[cursor="pointer"]:hover {
+  background: var(--phoenix-secondary-light) !important;
+  border-left: 3px solid var(--phoenix-primary) !important;
+}
+
+/* ===== 聊天消息区域 ===== */
+main[ref="e192"] {
+  background: var(--phoenix-bg-primary) !important;
+}
+
+/* 消息容器 */
+log[ref="e231"] {
+  padding: var(--phoenix-space-md) !important;
+}
+
+/* AI消息样式 (Fhoenix的消息) */
+img[alt="Fhoenix"] {
+  /* 凤凰头像效果 */
+  border-radius: 50% !important;
+  border: 2px solid var(--phoenix-primary) !important;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important;
+}
+
+generic:has(img[alt="Fhoenix"]) {
+  /* AI消息气泡 */
+  background: var(--phoenix-secondary) !important;
+  border-left: 4px solid var(--phoenix-primary) !important;
+  border-radius: 16px 16px 16px 4px !important;
+  margin: var(--phoenix-space-sm) 0 !important;
+  padding: var(--phoenix-space-md) !important;
+  box-shadow: var(--phoenix-shadow-sm) !important;
+}
+
+/* 用户消息样式 */
+img:not([alt="Fhoenix"]) {
+  /* 用户头像 */
+  border-radius: 50% !important;
+  border: 2px solid var(--phoenix-accent) !important;
+}
+
+generic:has(img:not([alt="Fhoenix"])) {
+  /* 用户消息气泡 */
+  background: var(--phoenix-bg-tertiary) !important;
+  border-right: 4px solid var(--phoenix-accent) !important;
+  border-radius: 16px 16px 4px 16px !important;
+  margin: var(--phoenix-space-sm) 0 !important;
+  padding: var(--phoenix-space-md) !important;
+  box-shadow: var(--phoenix-shadow-sm) !important;
+}
+
+/* 消息内容文本 */
+paragraph {
+  color: var(--phoenix-text-primary) !important;
+  line-height: var(--phoenix-line-height-normal) !important;
+}
+
+/* 消息元信息（时间、token统计） */
+generic[ref*="Fhoenix"] generic:nth-child(3) {
+  color: var(--phoenix-text-secondary) !important;
+  font-size: var(--phoenix-font-body-sm) !important;
+}
+
+/* ===== 输入区域 ===== */
+combobox[ref="e197"] {
+  /* 会话选择器 */
+  background: var(--phoenix-bg-secondary) !important;
+  border: 2px solid var(--phoenix-bg-tertiary) !important;
+  border-radius: var(--phoenix-radius-md) !important;
+  color: var(--phoenix-text-primary) !important;
+}
+
+combobox[ref="e197"]:focus {
+  border-color: var(--phoenix-primary) !important;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1) !important;
+}
+
+/* 工具栏按钮 */
+button[cursor="pointer"] {
+  background: var(--phoenix-bg-tertiary) !important;
+  border: 1px solid var(--phoenix-secondary) !important;
+  border-radius: var(--phoenix-radius-sm) !important;
+  color: var(--phoenix-text-primary) !important;
+  transition: all var(--phoenix-duration-normal) var(--phoenix-easing-ease) !important;
+}
+
+button[cursor="pointer"]:hover {
+  background: var(--phoenix-secondary-light) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--phoenix-shadow-primary-sm) !important;
+}
+
+button[pressed] {
+  background: var(--phoenix-primary-gradient) !important;
+  color: white !important;
+}
+
+/* ===== 动画效果 ===== */
+@keyframes phoenix-message-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+generic:has(img[alt="Fhoenix"]),
+generic:has(img:not([alt="Fhoenix"])) {
+  animation: phoenix-message-appear 0.3s var(--phoenix-easing-ease-out) !important;
+}
+
+/* 思考状态指示器 */
+group[ref*="tool"] {
+  position: relative;
+}
+
+group[ref*="tool"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 3px;
+  height: 100%;
+  background: var(--phoenix-warning);
+  border-radius: var(--phoenix-radius-full);
+  animation: phoenix-breathe 1.5s ease-in-out infinite alternate;
+}
+
+/* ===== 响应式优化 ===== */
+@media (max-width: 768px) {
+  navigation[ref="e36"] {
+    width: 200px !important;
+  }
+  
+  main[ref="e192"] {
+    margin-left: 200px !important;
+  }
+}
+
+/* ===== 凤凰特有元素 ===== */
+/* 添加凤凰徽标水印 */
+body::after {
+  content: "";
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: var(--phoenix-primary-gradient);
+  mask: radial-gradient(circle at center, black 0%, transparent 70%);
+  opacity: 0.1;
+  pointer-events: none;
+  animation: phoenix-flicker 3s ease-in-out infinite alternate;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--phoenix-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--phoenix-primary);
+  border-radius: var(--phoenix-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--phoenix-primary-light);
+}
+
+/* ===== 键盘快捷键提示 ===== */
+generic[ref="e11"] {
+  /* ⌘K 快捷键提示 */
+  background: var(--phoenix-accent) !important;
+  color: var(--phoenix-secondary) !important;
+  font-weight: var(--phoenix-font-weight-bold) !important;
+  border-radius: var(--phoenix-radius-sm) !important;
+  padding: 2px 6px !important;
+}
+
+/* ===== 错误状态 ===== */
+generic[ref="e38"] {
+  /* 未授权错误消息 */
+  background: var(--phoenix-error-light) !important;
+  border: 1px solid var(--phoenix-error) !important;
+  color: var(--phoenix-text-primary) !important;
+  border-radius: var(--phoenix-radius-md) !important;
+  padding: var(--phoenix-space-md) !important;
+}
+
+/* ===== 自定义字体 ===== */
+* {
+  font-family: var(--phoenix-font-family) !important;
+}
+
+strong {
+  color: var(--phoenix-primary-light) !important;
+}
+
+code {
+  background: var(--phoenix-bg-tertiary) !important;
+  color: var(--phoenix-accent-light) !important;
+  border: 1px solid var(--phoenix-secondary) !important;
+  border-radius: var(--phoenix-radius-sm) !important;
+  padding: 2px 6px !important;
+}
+
+/* ===== 性能优化 ===== */
+.phoenix-performance {
+  /* 减少不必要的动画开销 */
+  will-change: auto !important;
+  transform: translateZ(0) !important;
+}
+
+/* ===== 调试模式隐藏 ===== */
+.phoenix-debug {
+  display: none !important;
+}
