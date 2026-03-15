@@ -143,7 +143,8 @@ class SmartBackupSystem {
         .filter(file => file.startsWith('backup_') && file.endsWith('.tar.gz'))
         .map(file => ({
           name: file,
-          path: path.join(this.backupDir,),_            mtime: fs.statSync(path.join(this.backupDir, file)).mtime
+          path: path.join(this.backupDir, file),
+          mtime: fs.statSync(path.join(this.backupDir, file)).mtime
         }))
         .sort((a, b) => b.mtime - a.mtime);
       
